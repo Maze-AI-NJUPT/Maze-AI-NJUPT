@@ -3,6 +3,8 @@
 #if debug_AI_main
 int main()
 {
+
+
     Maze maze(10,10);
     maze.print();
     

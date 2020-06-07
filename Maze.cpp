@@ -159,6 +159,7 @@ void Maze::genMap()
         blocks.erase(blocks.begin() + rand_num);
     }
 
+    //终点坐标定义
     pair<int,int> ed;
     do
     {

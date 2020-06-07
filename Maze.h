@@ -23,6 +23,8 @@ public:
 /**
  * 地图
  */
+
+
 class Maze
 {
 private:
@@ -48,11 +50,19 @@ public:
     
     void getWall(int x, int y,vector<pair<pair<int,int>,Direction>> &blocks); //返回坐标相邻的墙体
     pair<int,int> getXY(pair<int,int> point, Direction now); //给出当前坐标和方向，返回下一步坐标
-    
+
+
+
+
+
 #if debug
     void print();                             //[测试]:在命令行中打印迷宫
 #endif
 };
+
+
+
+
 
 #if debug
 void Maze::print()
