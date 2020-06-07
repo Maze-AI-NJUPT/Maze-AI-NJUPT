@@ -1,3 +1,4 @@
+
 #ifndef STOREWIDGET_H
 #define STOREWIDGET_H
 
