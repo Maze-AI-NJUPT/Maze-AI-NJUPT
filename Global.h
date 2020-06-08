@@ -2,9 +2,9 @@
  * 配置全局信息
  * 
  */
-#define debug 1                     // 1:debug  0:release
+#define debug_global 0                     // 1:debug  0:release
 #define debug_Maze_main 0
-#define debug_AI_main 1
+#define debug_AI_main 0
 
 #define LUXURY 0                    //是否开启宝箱和陷阱
 const int GAME_ROW = 17;            //默认地图行数
