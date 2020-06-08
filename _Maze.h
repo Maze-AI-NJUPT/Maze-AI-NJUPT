@@ -1,7 +1,6 @@
 #include<memory>
 #include<vector>
 #include<iostream>
-#include<QString>
 #include"Global.h"
 using namespace std;
 
@@ -27,19 +26,14 @@ public:
 class Maze
 {
 private:
-    pair<int,int> start;                    //入口坐标
-public:
     int row;                                //行数
     int col;                                //列数
-    pair<int,int> gamer;                    //角色坐标
+    pair<int,int> start;                    //入口坐标
     pair<int,int> end;                      //出口坐标
     vector<vector<MazeElem>> game_map;      //地图
-    QString MapStytle[4][22];//地图风格字符串
 public:
     Maze(int row, int col);
-    Maze(){initialMaze(GAME_ROW,GAME_COL);  genMap(); initialMapStytle();}
     ~Maze();
-
     void genMap();                           //生成随机地图
     vector<vector<MazeElem>> getMap();       //获取地图
     int getRow();                            //获取地图行数
@@ -55,12 +49,6 @@ public:
     void getWall(int x, int y,vector<pair<pair<int,int>,Direction>> &blocks); //返回坐标相邻的墙体
     pair<int,int> getXY(pair<int,int> point, Direction now); //给出当前坐标和方向，返回下一步坐标
     
-    //移植QT
-    void initialMaze(int row,int col);
-    void initialMapStytle();//初始化地图风格字符串
-    void setCharacterPos();//设置角色位置
-    void setExitPos();
-
 #if debug
     void print();                             //[测试]:在命令行中打印迷宫
 #endif

@@ -1,4 +1,4 @@
-#include "_Maze.h"
+#include "Maze.h"
 #include <time.h>
 #include <map>
 #include <assert.h>
@@ -32,13 +32,6 @@ bool MazeElem::operator==(_MazeElem type)
 
 Maze::Maze(int row = GAME_ROW, int col = GAME_COL)
 {
-    initialMaze(row,col);
-    genMap();
-    initialMapStytle();
-}
-
-void Maze::initialMaze(int row,int col)
-{
     if (row %2 == 0 || col %2 ==0)
         row++, col++;
 
@@ -47,122 +40,7 @@ void Maze::initialMaze(int row,int col)
     game_map.resize(row);
     for (int i = 0; i < row; i++)
         game_map[i].resize(col);
-}
-
-void Maze::initialMapStytle() //初始化地图风格字符串
-{
-    MapStytle[0][0]="border-image: url(:/new/image/MagicGril/down1.png);";
-    MapStytle[0][1]="border-image: url(:/new/image/MagicGril/down2.png);";
-    MapStytle[0][2]="border-image: url(:/new/image/MagicGril/down3.png);";
-    MapStytle[0][3]="border-image: url(:/new/image/MagicGril/up1.png);";
-    MapStytle[0][4]="border-image: url(:/new/image/MagicGril/up2.png);";
-    MapStytle[0][5]="border-image: url(:/new/image/MagicGril/up3.png);";
-    MapStytle[0][6]="border-image: url(:/new/image/MagicGril/left1.png);";
-    MapStytle[0][7]="border-image: url(:/new/image/MagicGril/left2.png);";
-    MapStytle[0][8]="border-image: url(:/new/image/MagicGril/left3.png);";
-    MapStytle[0][9]="border-image: url(:/new/image/MagicGril/right1.png);";
-    MapStytle[0][10]="border-image: url(:/new/image/MagicGril/right2.png);";
-    MapStytle[0][11]="border-image: url(:/new/image/MagicGril/right3.png);";
-    MapStytle[0][12]="border-image: url(:/new/image/MagicGril/Wall.png);";
-    MapStytle[0][13]="border-image: url(:/new/image/MagicGril/Load.png);";
-    MapStytle[0][14]="border-image: url(:/new/image/MagicGril/box.png);";
-    MapStytle[0][15]="border-image: url(:/new/image/MagicGril/MagicGrill.png);";
-
-    MapStytle[1][0]="border-image: url(:/Naruto/image/Naruto/down1.png);";
-    MapStytle[1][1]="border-image: url(:/Naruto/image/Naruto/down2.png);";
-    MapStytle[1][2]="border-image: url(:/Naruto/image/Naruto/down3.png);";
-    MapStytle[1][3]="border-image: url(:/Naruto/image/Naruto/up1.png);";
-    MapStytle[1][4]="border-image: url(:/Naruto/image/Naruto/up2.png);";
-    MapStytle[1][5]="border-image: url(:/Naruto/image/Naruto/up3.png);";
-    MapStytle[1][6]="border-image: url(:/Naruto/image/Naruto/left1.png);";
-    MapStytle[1][7]="border-image: url(:/Naruto/image/Naruto/left2.png);";
-    MapStytle[1][8]="border-image: url(:/Naruto/image/Naruto/left3.png);";
-    MapStytle[1][9]="border-image: url(:/Naruto/image/Naruto/right1.png);";
-    MapStytle[1][10]="border-image: url(:/Naruto/image/Naruto/right2.png);";
-    MapStytle[1][11]="border-image: url(:/Naruto/image/Naruto/right3.png);";
-    MapStytle[1][12]="border-image: url(:/Naruto/image/Naruto/Wall.png);";
-    MapStytle[1][13]="border-image: url(:/Naruto/image/Naruto/Load.png);";
-    MapStytle[1][14]="border-image: url(:/Naruto/image/Naruto/box.png);";
-    MapStytle[1][15]="border-image: url(:/Naruto/image/Naruto/Naruto.png);";
-
-    MapStytle[2][0]="border-image: url(:/SuperMarie/image/SuperMarie/down1.png);";
-    MapStytle[2][1]="border-image: url(:/SuperMarie/image/SuperMarie/down2.png);";
-    MapStytle[2][2]="border-image: url(:/SuperMarie/image/SuperMarie/down3.png);";
-    MapStytle[2][3]="border-image: url(:/SuperMarie/image/SuperMarie/up1.png);";
-    MapStytle[2][4]="border-image: url(:/SuperMarie/image/SuperMarie/up2.png);";
-    MapStytle[2][5]="border-image: url(:/SuperMarie/image/SuperMarie/up3.png);";
-    MapStytle[2][6]="border-image: url(:/SuperMarie/image/SuperMarie/left1.png);";
-    MapStytle[2][7]="border-image: url(:/SuperMarie/image/SuperMarie/left2.png);";
-    MapStytle[2][8]="border-image: url(:/SuperMarie/image/SuperMarie/left3.png);";
-    MapStytle[2][9]="border-image: url(:/SuperMarie/image/SuperMarie/right1.png);";
-    MapStytle[2][10]="border-image: url(:/SuperMarie/image/SuperMarie/right2.png);";
-    MapStytle[2][11]="border-image: url(:/SuperMarie/image/SuperMarie/right3.png);";
-    MapStytle[2][12]="border-image: url(:/SuperMarie/image/SuperMarie/Wall.png);";
-    MapStytle[2][13]="border-image: url(:/SuperMarie/image/SuperMarie/Load.png);";
-    MapStytle[2][14]="border-image: url(:/SuperMarie/image/SuperMarie/box.png);";
-    MapStytle[2][15]="border-image: url(:/SuperMarie/image/SuperMarie/SuperMarie.png);";
-}
-
-
-void Maze::setCharacterPos()
-{
-    //随机设定方式
-//   point temp;
-//   QStack<point> s;
-//   for(int i=0;i<height;i++)
-//   {
-//       for(int j=0;j<width;j++)
-//       {
-//           if(Matrix[i][j].state==1)
-//           {
-//               temp.i=i;
-//               temp.j=j;
-//               s.push(temp);
-//           }
-//       }
-//   }
-//   int randNum=qrand()%s.size();
-//   x=s[randNum].i;
-//   y=s[randNum].j;
-   gamer.first=3;
-   gamer.second=3;
-}
-void Maze::setExitPos()
-{
-    //随机设定方式
-//    point temp;
-//    QStack<point> s;
-//    for(int i=0;i<height;i++)
-//    {
-//        for(int j=0;j<width;j++)
-//        {
-//            if(Matrix[i][j].state==1)
-//            {
-//                temp.i=i;
-//                temp.j=j;
-//                s.push(temp);
-//            }
-//        }
-//    }
-//    while(true)
-//    {
-//        int randNum=qrand()%s.size();
-//        exit_x=s[randNum].i;
-//        exit_y=s[randNum].j;
-//        if(exit_x!=x||exit_y!=y)
-//        {
-//            break;
-//        }
-//    }
-    /*
-    pair<int,int> ed;
-    do
-    {
-        ed = genGap(time(NULL));
-    } while (game_map[ed.first][ed.second].getType() == WALL);
-    this->end = ed;
-    */
-    this->end = make_pair(row-2,col-2);
+    genMap();
 }
 
 vector<vector<MazeElem>> Maze::getMap() { return game_map; }
@@ -244,7 +122,7 @@ void Maze::genMap()
     srand(time(NULL)); //随机种子
     pair<int, int> st;
     /*设成了（1，1）*/
-    st = make_pair(3,3);
+    st = make_pair(1,1);
 
     this->start = st;
 
@@ -281,8 +159,12 @@ void Maze::genMap()
         blocks.erase(blocks.begin() + rand_num);
     }
 
-
-    setExitPos();
+    pair<int,int> ed;
+    do
+    {
+        ed = genGap(time(NULL));
+    } while (game_map[ed.first][ed.second].getType() == WALL);
+    this->end = ed;
 }
 
 #if debug_Maze_main
