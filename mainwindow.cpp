@@ -172,8 +172,8 @@ void MainWindow::initialControlWidget()
     label_Stytle->setStyleSheet(m.MapStytle[StytleNum][15]);
 
     QLabel *label_select=new QLabel;
-    QLabel *label_bushu=new QLabel(infoWidget);
-     hp=new QLabel(infoWidget);
+//    QLabel *label_bushu=new QLabel(infoWidget);
+//     hp=new QLabel(infoWidget);
     //bushu=new QLabel(infoWidget);
     label_w->setText("迷宫宽度");
     label_h->setText("迷宫高度");

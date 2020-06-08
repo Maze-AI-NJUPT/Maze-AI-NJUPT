@@ -1,0 +1,14 @@
+INPUT(
+./debug\qrc_sources.o
+./debug\main.o
+./debug\mainwindow.o
+./debug\maze.o
+./debug\interface.o
+./debug\Dungeon.o
+./debug\storewidget.o
+./debug\_Maze.o
+./debug\AI.o
+./debug\moc_mainwindow.o
+./debug\moc_interface.o
+./debug\moc_storewidget.o
+);

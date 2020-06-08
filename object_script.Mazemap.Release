@@ -1,0 +1,14 @@
+INPUT(
+./release\qrc_sources.o
+./release\main.o
+./release\mainwindow.o
+./release\maze.o
+./release\interface.o
+./release\Dungeon.o
+./release\storewidget.o
+./release\_Maze.o
+./release\AI.o
+./release\moc_mainwindow.o
+./release\moc_interface.o
+./release\moc_storewidget.o
+);
