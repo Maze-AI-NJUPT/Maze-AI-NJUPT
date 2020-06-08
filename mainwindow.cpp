@@ -555,25 +555,25 @@ void MainWindow::CreateMaze_Layout()
     }
     else
     {
-        m.height=sp_h->value();
-        m.width=sp_w->value();
+        m.row=sp_h->value();
+        m.col=sp_w->value();
     }
-    //当h和w都为偶数时，迷宫的出口（height-2，width-2）会被墙给封住
-    if(!isOdd(m.height)&&!isOdd(m.width))
+    //当h和w都为偶数时，迷宫的出口（row-2，col-2）会被墙给封住
+    if(!isOdd(m.row)&&!isOdd(m.col))
     {
-        if(m.height>m.width)
+        if(m.row>m.col)
         {
-            m.height+=1;
-            m.width=m.height;
+            m.row+=1;
+            m.col=m.row;
         }
         else
         {
-            m.width+=1;
-            m.height=m.width;
+            m.col+=1;
+            m.row=m.col;
         }
     }
-    BASIC_WIDTH=840/m.width;//52
-    BASIC_HEIGHT=680/m.height;//56
+    BASIC_WIDTH=840/m.col;//52
+    BASIC_HEIGHT=680/m.row;//56
 
     if(issurface)
     {
@@ -584,18 +584,21 @@ void MainWindow::CreateMaze_Layout()
 
     People->setMinimumSize(BASIC_WIDTH,BASIC_HEIGHT);
 
-    int temph=m.height;
-    int tempw=m.width;
+    int temph=m.getRow();
+    int tempw=m.getCol();
     m.initialMaze(temph,tempw);
-    m.CreateMaze();
+    m.genMap();
     m.setCharacterPos();
-    m.setExitPos();
-    m.autoFindPath();
+    //m.setExitPos();
+    //m.autoFindPath();
+    ai = new Dfs(m);
+    ai->solve();
+
     StytleNum=SelectMapStytle->currentIndex();
     ShowMaze_Layout();
     lastheight=temph;
     lastwidth=tempw;
-    m.last_height=m.height;
+    //m.last_row=m.row;
     AIAnimationButton->setEnabled(true);
     AutoMoveButton->setEnabled(true);
     quitButton->setEnabled(true);
@@ -615,22 +618,22 @@ void MainWindow::ShowMaze_Layout()
             }
         }
     }
-    gLayout_Map->addWidget(People,m.x,m.y);
+    gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
     People->setStyleSheet(m.MapStytle[StytleNum][0]);
     People->show();//用就显示
-    for(int i=0;i<m.height;i++)
+    for(int i=0;i<m.row;i++)
     {
-        for(int j=0;j<m.width;j++)
+        for(int j=0;j<m.col;j++)
         {
             MazeWidget[i][j]->setMinimumSize(BASIC_WIDTH,BASIC_HEIGHT);
             MazeWidget[i][j]->show();//要用的窗口必须要显示出来
-            if(m.Matrix[i][j].state == 0)//状态0 代表 墙 障碍
+            if(m.game_map[i][j].getType()== WALL)//状态0 代表 墙 障碍
                 MazeWidget[i][j]->setStyleSheet(m.MapStytle[StytleNum][12]);
-            if(m.Matrix[i][j].state == 1)//状态1 代表 草地 非障碍
+            if(m.game_map[i][j].getType()== ROAD)//状态1 代表 草地 非障碍
                 MazeWidget[i][j]->setStyleSheet(m.MapStytle[StytleNum][13]);
         }
     }
-    MazeWidget[m.exit_x][m.exit_y]->setStyleSheet(m.MapStytle[StytleNum][14]);
+    MazeWidget[m.end.first][m.end.second]->setStyleSheet(m.MapStytle[StytleNum][14]);
     isShow=true;
 }
 void MainWindow::hideMaze()
@@ -1205,50 +1208,50 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         {
         case Qt::Key_W://上
             //上面为墙，则什么也不执行
-            if(m.Matrix[m.x-1][m.y].state==0)
+            if(m.game_map[m.gamer.first-1][m.gamer.second].getType()==WALL)
             {
                 return;
             }
-            m.x-=1;
+            m.gamer.first-=1;
             qDebug()<<MainWindow::bushu;
 
             MainWindow::bushu+=1;
 
             qDebug()<<MainWindow::bushu;
 
-            gLayout_Map->addWidget(People,m.x,m.y);
+            gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
             People->setStyleSheet(m.MapStytle[StytleNum][3]);//显示向上移动图片
             break;
         case Qt::Key_S://下
-            if(m.Matrix[m.x+1][m.y].state==0)
+            if(m.game_map[m.gamer.first+1][m.gamer.second].getType()==WALL)
             {
                return;
             }
-            m.x+=1;
-            gLayout_Map->addWidget(People,m.x,m.y);
+            m.gamer.first+=1;
+            gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
             People->setStyleSheet(m.MapStytle[StytleNum][0]);
             break;
         case Qt::Key_A://左
-            if(m.Matrix[m.x][m.y-1].state==0)
+            if(m.game_map[m.gamer.first][m.gamer.second-1].getType()==WALL)
             {
                 return;
             }
-            m.y-=1;
-            gLayout_Map->addWidget(People,m.x,m.y);
+            m.gamer.second-=1;
+            gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
             People->setStyleSheet(m.MapStytle[StytleNum][6]);
-            //qDebug()<<"width "<<People->width()<<"height "<<People->height();
+            //qDebug()<<"col "<<People->col()<<"row "<<People->row();
             break;
         case Qt::Key_D://右
-            if(m.Matrix[m.x][m.y+1].state==0)
+            if(m.game_map[m.gamer.first][m.gamer.second+1].getType()==WALL)
             {
                 return;
             }
-            m.y+=1;
-            gLayout_Map->addWidget(People,m.x,m.y);
+            m.gamer.second+=1;
+            gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
             People->setStyleSheet(m.MapStytle[StytleNum][9]);
             break;
         }
-        if(m.x==m.exit_x&&m.y==m.exit_y)
+        if(m.gamer.first==m.end.first&&m.gamer.second==m.end.second)
         {
             QMessageBox message(QMessageBox::NoIcon, "已走步数为：", "进入迷宫下一层！");
             //bushu->setText(intToQString(bushu));
@@ -1797,13 +1800,13 @@ void MainWindow::ShowAnimation()
     isAIAnimationButton=true;
     isAutoMoveButton=false;
     AutoMoveButton->setEnabled(false);
-    for(int i=0; i<m.PathStack.size()-1;i++)
+    for(int i=0; i<ai->ans.size()-1;i++)
     {
         QPropertyAnimation* animation = new QPropertyAnimation(People, "pos");//动作初始化,People是操作对象
         animation->setDuration(200);//设置动作间隔                              //"pos"是操作属性，与QPoint 对应
                                                                               //"geometry" 与QRect/QRectF 对应
-        animation->setStartValue(QPoint(m.PathStack[i].j*BASIC_WIDTH,m.PathStack[i].i*BASIC_HEIGHT));
-        animation->setEndValue(QPoint(m.PathStack[i+1].j*BASIC_WIDTH,m.PathStack[i+1].i*BASIC_HEIGHT));
+        animation->setStartValue(QPoint(ai->ans[i].first.second*BASIC_WIDTH,ai->ans[i].first.first*BASIC_HEIGHT));
+        animation->setEndValue(QPoint(ai->ans[i+1].first.second*BASIC_WIDTH,ai->ans[i+1].first.first*BASIC_HEIGHT));
         animation->setEasingCurve(QEasingCurve::Linear);
         group->addAnimation(animation);//向动画组中添加动作
     }
@@ -2179,17 +2182,17 @@ void MainWindow::ShowPath()
 {
     if(!isAIAnimationButton)
     {
-        point temp=m.PathStack[iNum];
-        MazeWidget[temp.i][temp.j]->setStyleSheet(m.MapStytle[StytleNum][0]);
+        auto temp=ai->ans[iNum];
+        MazeWidget[temp.first.first][temp.first.second]->setStyleSheet(m.MapStytle[StytleNum][0]);
         iNum++;
-        if(iNum == m.PathStack.size()-1)
+        if(iNum == ai->ans.size()-1)
         {
             iNum = 0;
-            for(int i=0;i<m.PathStack.size();i++)
+            for(int i=0;i<ai->ans.size();i++)
             {
-                point temp=m.PathStack[i];
-                MazeWidget[temp.i][temp.j]->setStyleSheet(m.MapStytle[StytleNum][13]);
-                MazeWidget[m.height-2][m.width-2]->setStyleSheet(m.MapStytle[StytleNum][14]);
+                auto temp=ai->ans[i];
+                MazeWidget[temp.first.first][temp.first.second]->setStyleSheet(m.MapStytle[StytleNum][13]);
+                MazeWidget[m.row-2][m.col-2]->setStyleSheet(m.MapStytle[StytleNum][14]);
             }
             timer->stop();
             AIAnimationButton->setEnabled(true);
@@ -2204,24 +2207,24 @@ void MainWindow::moveCharacter()//设置移动时的图片
 {
     if(!isAutoMoveButton)
     {
-        if(m.PathStack[iNum+1].i < m.PathStack[iNum].i)//up
+        if(ai->ans[iNum].second == UP)//up
         {
             People->setStyleSheet(m.MapStytle[StytleNum][3+iNum%3]);
         }
-        if(m.PathStack[iNum+1].i > m.PathStack[iNum].i)//down
+        if(ai->ans[iNum].second == DOWN)//down
         {
             People->setStyleSheet(m.MapStytle[StytleNum][0+iNum%3]);
         }
-        if(m.PathStack[iNum+1].j > m.PathStack[iNum].j)//right
+        if(ai->ans[iNum].second == RIGHT)//right
         {
             People->setStyleSheet(m.MapStytle[StytleNum][9+iNum%3]);
         }
-        if(m.PathStack[iNum+1].j < m.PathStack[iNum].j)//left
+        if(ai->ans[iNum].second == LEFT)//left
         {
             People->setStyleSheet(m.MapStytle[StytleNum][6+iNum%3]);
         }
         iNum++;
-        if(iNum == m.PathStack.size()-1)
+        if(iNum == ai->ans.size()-1)
         {
             timer->stop();
             iNum = 0;
