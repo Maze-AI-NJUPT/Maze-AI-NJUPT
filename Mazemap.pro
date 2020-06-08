@@ -12,18 +12,13 @@ SOURCES += main.cpp\
     maze.cpp \
     interface.cpp \
     Dungeon.cpp \
-    storewidget.cpp \
-    _Maze.cpp \
-    AI.cpp
+    storewidget.cpp
 
 HEADERS  += mainwindow.h \
     maze.h \
     interface.h \
     Dungeon.h \
-    storewidget.h \
-    _Maze.h \
-    AI.h \
-    Global.h
+    storewidget.h
 
 FORMS    +=
 
