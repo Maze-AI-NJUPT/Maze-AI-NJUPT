@@ -64,6 +64,7 @@ private:
     bool issurface;//开始界面标识（用于标识开始界面已加载完成）
     bool isAIAnimationButton;//AI移动标识
     bool isAutoMoveButton;//自动寻路标识
+    bool isBfsMoveBotton;//广度优先标识
 private:
     Maze m;//迷宫类
     AI *ai;
@@ -76,7 +77,9 @@ private:
     QComboBox *SelectMapStytle;//地图风格选择
     QPushButton *AIAnimationButton;//AI操作
     QPushButton *AutoMoveButton;//自动寻路
+    QPushButton *BfsMoveButton;//广度优先寻路
     QPushButton *quitButton;//返回主菜单按钮
+
     QSequentialAnimationGroup *group;//AI操作动画组
     QTimer *timer;//定时器
 private:

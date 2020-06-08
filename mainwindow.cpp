@@ -81,7 +81,7 @@ void MainWindow::initialWindow_Layout()
     issurface=true;
     isAIAnimationButton=false;
     isAutoMoveButton=false;
-
+    isBfsMoveBotton=false;
     display_it=0;
 
     initialControlWidget();
@@ -197,20 +197,27 @@ void MainWindow::initialControlWidget()
     quitButton=new QPushButton(this);
     AIAnimationButton=new QPushButton(this);
     AutoMoveButton=new QPushButton(this);
+    BfsMoveButton=new QPushButton(this);
+
     AIAnimationButton->setEnabled(false);
     AutoMoveButton->setEnabled(false);
+    BfsMoveButton->setEnabled(false);
     GenerateButton->setText("生成迷宫");
     AutoMoveButton->setText("自动寻路");
+    BfsMoveButton->setText("广度优先");
     AIAnimationButton->setText("AI操作");
     quitButton->setText("主菜单");
     quitButton->setEnabled(false);
     GenerateButton->setStyleSheet(button_style);
     AutoMoveButton->setStyleSheet(button_style);
+    BfsMoveButton->setStyleSheet(button_style);
     AIAnimationButton->setStyleSheet(button_style);
     quitButton->setStyleSheet(button_style);
 
     connect(GenerateButton,SIGNAL(clicked()),this,SLOT(CreateMaze_Layout()));
     connect(AutoMoveButton,SIGNAL(clicked()),this,SLOT(timeStart()));
+    //connect(BfsMoveButton,SIGNAL(clicked()),this,SLOT(timeStart()));
+
     connect(AIAnimationButton,SIGNAL(clicked()),this,SLOT(ShowAnimation()));
     connect(quitButton,SIGNAL(clicked()),this,SLOT(quit()));
 
@@ -237,8 +244,9 @@ void MainWindow::initialControlWidget()
     gLayout_Control->addWidget(GenerateButton,5,1);
 
     gLayout_Control->addWidget(AutoMoveButton,6,1);
+    gLayout_Control->addWidget(BfsMoveButton,7,1);
 
-    gLayout_Control->addWidget(AIAnimationButton,7,1);
+    gLayout_Control->addWidget(AIAnimationButton,8,1);
     gLayout_Control->addWidget(label_blank[4],8,0,1,3);
     gLayout_Control->addWidget(quitButton,9,1);
     Controlwidget->setLayout(gLayout_Control);
@@ -248,6 +256,7 @@ void MainWindow::resetMaze()
 {
     AIAnimationButton->setEnabled(false);
     AutoMoveButton->setEnabled(false);
+    BfsMoveButton->setEnabled(false);
     quitButton->setEnabled(false);
     sp_h->setValue(0);
     sp_w->setValue(0);
@@ -601,6 +610,7 @@ void MainWindow::CreateMaze_Layout()
     //m.last_row=m.row;
     AIAnimationButton->setEnabled(true);
     AutoMoveButton->setEnabled(true);
+    BfsMoveButton->setEnabled(true);
     quitButton->setEnabled(true);
     isPlay=true;
 }
@@ -1799,6 +1809,7 @@ void MainWindow::ShowAnimation()
     group->clear();//动画组清空
     isAIAnimationButton=true;
     isAutoMoveButton=false;
+    isBfsMoveBotton=false;
     AutoMoveButton->setEnabled(false);
     for(int i=0; i<ai->ans.size()-1;i++)
     {
@@ -1818,6 +1829,7 @@ void MainWindow::timeStart()
 {
     isAutoMoveButton=true;
     isAIAnimationButton=false;
+    isBfsMoveBotton=false;
     AIAnimationButton->setEnabled(false);
     timer->start(50);
 }
@@ -2197,6 +2209,7 @@ void MainWindow::ShowPath()
             timer->stop();
             AIAnimationButton->setEnabled(true);
             isAutoMoveButton=false;
+            isBfsMoveBotton=false;
             isAIAnimationButton=true;
             return;
         }
