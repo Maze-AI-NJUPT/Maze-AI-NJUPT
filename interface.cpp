@@ -32,7 +32,7 @@ interface::interface(QWidget *parent) :
                          "QPushButton:pressed{background-color:aquamarine;border-style:inset;}";
 
     button_classical= new QPushButton(this);//开始界面上的play按钮
-    button_classical->setGeometry(360,285,120,30);
+    button_classical->setGeometry(360,285,160,50);
     button_classical->setText("逃出升天");
     button_classical->setStyleSheet(button_style);
     button_classical->setFont(font);
@@ -40,22 +40,22 @@ interface::interface(QWidget *parent) :
 
 
     button_Dungeon=new QPushButton(this);
-    button_Dungeon->setGeometry(360,335,120,30);
+    button_Dungeon->setGeometry(360,335,160,50);
     button_Dungeon->setText("勇闯天涯");
     button_Dungeon->setStyleSheet(button_style);
     button_Dungeon->setFont(font);
     connect(button_Dungeon,SIGNAL(clicked()),this,SLOT(DungeonStart()));
 
     button_Quit=new QPushButton(this);
-    button_Quit->setGeometry(360,385,120,30);
+    button_Quit->setGeometry(360,385,160,50);
     button_Quit->setText("离开游戏");
     button_Quit->setStyleSheet(button_style);
     button_Quit->setFont(font);
     connect(button_Quit,SIGNAL(clicked()),this,SLOT(Quit()));
 
     button_About=new QPushButton(this);
-    button_About->setGeometry(360,435,120,30);
-    button_About->setText("关于");
+    button_About->setGeometry(360,435,160,50);
+    button_About->setText("制作人");
     button_About->setStyleSheet(button_style);
     button_About->setFont(font);
     connect(button_About,SIGNAL(clicked()),this,SLOT(AboutShow()));
@@ -170,7 +170,7 @@ void interface::CheckBGMstate()
 }
 void interface::AboutShow()
 {
-    QMessageBox message(QMessageBox::Information,"关于",
+    QMessageBox message(QMessageBox::Information,"制作人",
                         "由B17040509、B17040515、B17040510完成",QMessageBox::Yes,this);
     message.setIconPixmap(QPixmap(":/info/image/information/关于.ico"));
     message.button(QMessageBox::Yes)->hide();//去除按钮
