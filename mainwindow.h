@@ -19,7 +19,7 @@
 #include <QMediaPlaylist>
 #include <QPoint>
 #include <QProgressBar>
-#include "maze.h"
+#include "AI.h"
 #include "Dungeon.h"
 #include "interface.h"
 #include "storewidget.h"
@@ -65,7 +65,8 @@ private:
     bool isAIAnimationButton;//AI移动标识
     bool isAutoMoveButton;//自动寻路标识
 private:
-    maze m;//迷宫类
+    Maze m;//迷宫类
+    AI *ai;
     QWidget *Controlwidget;//控制界面
     QGridLayout *gLayout_Control;//控制界面网格布局
     QSpinBox *sp_w;//迷宫大小输入
