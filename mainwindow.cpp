@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qDebug()<<MainWindow::bushu;
 
-    MainWindow::bushu=0;
+    MainWindow::bushu = 0;
 
     qDebug()<<MainWindow::bushu;
 
@@ -542,6 +542,7 @@ bool isOdd(int num)
 void MainWindow::CreateMaze_Layout()
 {
     //停止之前可能的工作
+    MainWindow::bushu = 0;
     timer->stop();
     group->stop();
     iNum=1;
@@ -1212,11 +1213,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             {
                 return;
             }
-            m.gamer.first-=1;
-            qDebug()<<MainWindow::bushu;
-
             MainWindow::bushu+=1;
-
+            m.gamer.first-=1;
             qDebug()<<MainWindow::bushu;
 
             gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
@@ -1227,7 +1225,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             {
                return;
             }
+            MainWindow::bushu+=1;
             m.gamer.first+=1;
+            qDebug()<<MainWindow::bushu;
+
             gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
             People->setStyleSheet(m.MapStytle[StytleNum][0]);
             break;
@@ -1236,7 +1237,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             {
                 return;
             }
+            MainWindow::bushu+=1;
             m.gamer.second-=1;
+            qDebug()<<MainWindow::bushu;
+
             gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
             People->setStyleSheet(m.MapStytle[StytleNum][6]);
             //qDebug()<<"col "<<People->col()<<"row "<<People->row();
@@ -1246,7 +1250,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             {
                 return;
             }
+            MainWindow::bushu+=1;
             m.gamer.second+=1;
+            qDebug()<<MainWindow::bushu;
+
             gLayout_Map->addWidget(People,m.gamer.first,m.gamer.second);
             People->setStyleSheet(m.MapStytle[StytleNum][9]);
             break;
