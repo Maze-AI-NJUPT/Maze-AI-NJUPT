@@ -81,7 +81,7 @@ void MainWindow::initialWindow_Layout()
     issurface=true;
     isAIAnimationButton=false;
     isAutoMoveButton=false;
-
+    isBfsMoveButton=false;
     display_it=0;
 
     initialControlWidget();
@@ -197,20 +197,27 @@ void MainWindow::initialControlWidget()
     quitButton=new QPushButton(this);
     AIAnimationButton=new QPushButton(this);
     AutoMoveButton=new QPushButton(this);
+    BfsMoveButton=new QPushButton(this);
+
     AIAnimationButton->setEnabled(false);
     AutoMoveButton->setEnabled(false);
+    BfsMoveButton->setEnabled(false);
     GenerateButton->setText("生成迷宫");
     AutoMoveButton->setText("自动寻路");
-    AIAnimationButton->setText("AI操作");
+    BfsMoveButton->setText("广度优先");
+    AIAnimationButton->setText("智能寻路");
     quitButton->setText("主菜单");
     quitButton->setEnabled(false);
     GenerateButton->setStyleSheet(button_style);
     AutoMoveButton->setStyleSheet(button_style);
+    BfsMoveButton->setStyleSheet(button_style);
     AIAnimationButton->setStyleSheet(button_style);
     quitButton->setStyleSheet(button_style);
 
     connect(GenerateButton,SIGNAL(clicked()),this,SLOT(CreateMaze_Layout()));
     connect(AutoMoveButton,SIGNAL(clicked()),this,SLOT(timeStart()));
+    //connect(BfsMoveButton,SIGNAL(clicked()),this,SLOT(timeStart()));
+
     connect(AIAnimationButton,SIGNAL(clicked()),this,SLOT(ShowAnimation()));
     connect(quitButton,SIGNAL(clicked()),this,SLOT(quit()));
 
@@ -234,11 +241,13 @@ void MainWindow::initialControlWidget()
     gLayout_Control->addWidget(SelectMapStytle,3,1);
     gLayout_Control->addWidget(label_Stytle,4,0,1,2);
 
-    gLayout_Control->addWidget(GenerateButton,5,1);
+    gLayout_Control->addWidget(GenerateButton,5,0);
 
-    gLayout_Control->addWidget(AutoMoveButton,6,1);
+    gLayout_Control->addWidget(AutoMoveButton,5,1);
+    gLayout_Control->addWidget(BfsMoveButton,6,0);
 
-    gLayout_Control->addWidget(AIAnimationButton,7,1);
+    gLayout_Control->addWidget(AIAnimationButton,6,1);
+
     gLayout_Control->addWidget(label_blank[4],8,0,1,3);
     gLayout_Control->addWidget(quitButton,9,1);
     Controlwidget->setLayout(gLayout_Control);
@@ -248,6 +257,7 @@ void MainWindow::resetMaze()
 {
     AIAnimationButton->setEnabled(false);
     AutoMoveButton->setEnabled(false);
+    BfsMoveButton->setEnabled(false);
     quitButton->setEnabled(false);
     sp_h->setValue(0);
     sp_w->setValue(0);
@@ -266,7 +276,7 @@ QString intToQString(int num)
 void MainWindow::initialinfoWidget()
 {
     infoWidget=new QWidget(this);
-    QFont fontLabel("Microsoft YaHei" ,12, 75);
+    QFont fontLabel("Microsoft YaHei" ,10, 75);
     QFont fontNum("Microsoft YaHei" ,10, 65);
     QFont fontName("Microsoft YaHei" ,10, 55);
     QString button_style="QPushButton{border-image:url(:/interface/image/interface/labelbg.png);color:white;border-radius:10px;}"
@@ -357,8 +367,8 @@ void MainWindow::initialinfoWidget()
     Floor->setStyleSheet("border-image: url(:/interface/image/interface/labelbg.png);");
 
     CharacterPic->setStyleSheet("border-image: url(:/info/image/information/Character.png);");
-    label_Name->setText("传说中，他是");
-    label_level->setText("等级");
+    label_Name->setText("角色");
+    label_level->setText("级");
     label_hp->setText("生命");
     label_mp->setText("法术");
     label_atk->setText("攻击");
@@ -592,7 +602,7 @@ void MainWindow::CreateMaze_Layout()
     m.setCharacterPos();
     //m.setExitPos();
     //m.autoFindPath();
-    ai = new Dfs(m);
+    ai = new Bfs(m);
     ai->solve();
 
     StytleNum=SelectMapStytle->currentIndex();
@@ -600,8 +610,10 @@ void MainWindow::CreateMaze_Layout()
     lastheight=temph;
     lastwidth=tempw;
     //m.last_row=m.row;
+
     AIAnimationButton->setEnabled(true);
     AutoMoveButton->setEnabled(true);
+    BfsMoveButton->setEnabled(true);
     quitButton->setEnabled(true);
     isPlay=true;
 }
@@ -778,6 +790,7 @@ void MainWindow::changeHP(int num)
     else
     {
         d.role.hp+=num;
+        d.role.hp+=2000;
     }
 }
 void MainWindow::QuestionBox(int num)
@@ -839,7 +852,7 @@ void MainWindow::QuestionBox(int num)
             {
                 itemNum=10;
                 GetitemTimer->start(100);
-                d.MAX_HP+=100;
+                d.MAX_HP+=2000;
                 changeHP(100);
                 updateStatusData();
                 d.map[d.floor-1][temp1][temp2]=1;
@@ -923,7 +936,7 @@ void MainWindow::items(int _itemNum, int _moveDirection)
         break;
     case 10:
     {
-       d.MAX_HP+=100;
+       d.MAX_HP+=2000;
        changeHP(100);
        hp->setText(QString::number(d.role.hp));
        soundPlay(5);
@@ -1260,7 +1273,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         }
         if(m.gamer.first==m.end.first&&m.gamer.second==m.end.second)
         {
-            QMessageBox message(QMessageBox::NoIcon, "已走步数为：", "进入迷宫下一层！");
+            QMessageBox message(QMessageBox::NoIcon, "取经人", "继续向下走吧！");
             //bushu->setText(intToQString(bushu));
             message.setIconPixmap(QPixmap(":/info/image/information/congratulation.png"));
             message.exec();//不加这个对话框会一闪而过
@@ -1806,6 +1819,7 @@ void MainWindow::ShowAnimation()
     group->clear();//动画组清空
     isAIAnimationButton=true;
     isAutoMoveButton=false;
+   isBfsMoveButton=false;
     AutoMoveButton->setEnabled(false);
     for(int i=0; i<ai->ans.size()-1;i++)
     {
@@ -1825,6 +1839,7 @@ void MainWindow::timeStart()
 {
     isAutoMoveButton=true;
     isAIAnimationButton=false;
+    isBfsMoveButton=false;
     AIAnimationButton->setEnabled(false);
     timer->start(50);
 }
@@ -2185,6 +2200,7 @@ void MainWindow::FightWinshow()//战斗界面
         }
     }
 }
+
 void MainWindow::ShowPath()
 {
     if(!isAIAnimationButton)
@@ -2204,7 +2220,8 @@ void MainWindow::ShowPath()
             timer->stop();
             AIAnimationButton->setEnabled(true);
             isAutoMoveButton=false;
-            isAIAnimationButton=true;
+            isBfsMoveButton=false;
+            isAIAnimationButton=false;
             return;
         }
 
