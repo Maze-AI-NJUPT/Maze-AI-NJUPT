@@ -64,7 +64,7 @@ private:
     bool issurface;//开始界面标识（用于标识开始界面已加载完成）
     bool isAIAnimationButton;//AI移动标识
     bool isAutoMoveButton;//自动寻路标识
-    bool isBfsMoveBotton;//广度优先标识
+    bool isBfsMoveButton;//广度优先标识
 private:
     Maze m;//迷宫类
     AI *ai;
