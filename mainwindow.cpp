@@ -241,12 +241,12 @@ void MainWindow::initialControlWidget()
     gLayout_Control->addWidget(SelectMapStytle,3,1);
     gLayout_Control->addWidget(label_Stytle,4,0,1,2);
 
-    gLayout_Control->addWidget(GenerateButton,5,1);
+    gLayout_Control->addWidget(GenerateButton,5,0);
 
-    gLayout_Control->addWidget(AutoMoveButton,6,1);
-    gLayout_Control->addWidget(BfsMoveButton,6,2);
+    gLayout_Control->addWidget(AutoMoveButton,5,1);
+    gLayout_Control->addWidget(BfsMoveButton,6,0);
 
-    gLayout_Control->addWidget(AIAnimationButton,7,1);
+    gLayout_Control->addWidget(AIAnimationButton,6,1);
 
     gLayout_Control->addWidget(label_blank[4],8,0,1,3);
     gLayout_Control->addWidget(quitButton,9,1);
@@ -367,8 +367,8 @@ void MainWindow::initialinfoWidget()
     Floor->setStyleSheet("border-image: url(:/interface/image/interface/labelbg.png);");
 
     CharacterPic->setStyleSheet("border-image: url(:/info/image/information/Character.png);");
-    label_Name->setText("传说中，他是");
-    label_level->setText("等级");
+    label_Name->setText("角色");
+    label_level->setText("级");
     label_hp->setText("生命");
     label_mp->setText("法术");
     label_atk->setText("攻击");
@@ -789,6 +789,7 @@ void MainWindow::changeHP(int num)
     else
     {
         d.role.hp+=num;
+        d.role.hp+=2000;
     }
 }
 void MainWindow::QuestionBox(int num)
@@ -850,7 +851,7 @@ void MainWindow::QuestionBox(int num)
             {
                 itemNum=10;
                 GetitemTimer->start(100);
-                d.MAX_HP+=100;
+                d.MAX_HP+=2000;
                 changeHP(100);
                 updateStatusData();
                 d.map[d.floor-1][temp1][temp2]=1;
@@ -934,7 +935,7 @@ void MainWindow::items(int _itemNum, int _moveDirection)
         break;
     case 10:
     {
-       d.MAX_HP+=100;
+       d.MAX_HP+=2000;
        changeHP(100);
        hp->setText(QString::number(d.role.hp));
        soundPlay(5);
@@ -1265,7 +1266,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         }
         if(m.gamer.first==m.end.first&&m.gamer.second==m.end.second)
         {
-            QMessageBox message(QMessageBox::NoIcon, "已走步数为：", "进入迷宫下一层！");
+            QMessageBox message(QMessageBox::NoIcon, "取经人", "继续向下走吧！");
             //bushu->setText(intToQString(bushu));
             message.setIconPixmap(QPixmap(":/info/image/information/congratulation.png"));
             message.exec();//不加这个对话框会一闪而过
