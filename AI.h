@@ -21,15 +21,18 @@ class Dfs : public AI
 {
 private:
     map<pair<int, int>, int> visited;
-
+    bool bestPath;
 public:
-    Dfs(Maze maze) : AI(maze){}
+    Dfs(Maze maze,bool bestPath = false) : AI(maze) {this->bestPath = bestPath;}
     void solve();
-    void dfs(pair<int,int> p);
+    void dfs(pair<int, int> p);
 };
 
 class Bfs : public AI
 {
+private:
+    map<pair<int, int>, int> visited;
+
 public:
     Bfs(Maze maze) : AI(maze){}
     void solve();

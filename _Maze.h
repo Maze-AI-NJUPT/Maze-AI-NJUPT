@@ -26,12 +26,11 @@ public:
  */
 class Maze
 {
-private:
-    pair<int,int> start;                    //入口坐标
 public:
     int row;                                //行数
     int col;                                //列数
     pair<int,int> gamer;                    //角色坐标
+    pair<int,int> start;                    //入口坐标
     pair<int,int> end;                      //出口坐标
     vector<vector<MazeElem>> game_map;      //地图
     QString MapStytle[4][22];//地图风格字符串

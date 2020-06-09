@@ -163,6 +163,7 @@ void Maze::setExitPos()
     this->end = ed;
     */
     this->end = make_pair(row-2,col-2);
+    game_map[end.first][end.second].setType(ROAD);
 }
 
 vector<vector<MazeElem>> Maze::getMap() { return game_map; }

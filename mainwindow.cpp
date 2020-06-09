@@ -601,7 +601,7 @@ void MainWindow::CreateMaze_Layout()
     m.setCharacterPos();
     //m.setExitPos();
     //m.autoFindPath();
-    ai = new Dfs(m);
+    ai = new Bfs(m);
     ai->solve();
 
     StytleNum=SelectMapStytle->currentIndex();
