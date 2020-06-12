@@ -2,25 +2,41 @@
 #include <time.h>
 #include <map>
 #include <assert.h>
+#include<stdio.h>
+#include<iomanip>
 
-MazeElem::MazeElem(_MazeElem type = ROAD)
+MazeElem::MazeElem(_MazeElem type)
 {
-    if (type == LUCKY)
-        value = LUCKY_PRICE;
-    else
-    {
-        this->type = type;
-        value = 0;
-    }
+    setType(type);
 }
 
-void MazeElem::setType(_MazeElem tp)
+void MazeElem::setType(_MazeElem tp, double val)
 {
     this->type = tp;
-    if (tp == LUCKY)
-        value = LUCKY_PRICE;
-    else
-        value = 0;
+    switch (tp) {
+    case ROAD:
+        this->reward = V_ROAD;
+        break;
+    case WALL:
+        this->reward = V_WALL;
+        break;
+    case TRAP:
+        this->reward = V_TRAP;
+        break;
+    case LUCKY:
+        this->reward = V_LUCKY;
+        break;
+    default:
+        break;
+    }
+    this->value = val;
+}
+
+void MazeElem::setType(_MazeElem tp, double val, double rew)
+{
+    this->type = tp;
+    this->reward = rew;
+    this->value = val;
 }
 
 _MazeElem MazeElem::getType() { return type; }
@@ -163,7 +179,7 @@ void Maze::setExitPos()
     this->end = ed;
     */
     this->end = make_pair(row-2,col-2);
-    game_map[end.first][end.second].setType(ROAD);
+    game_map[end.first][end.second].setType(ROAD, 0, V_DEST);
 }
 
 vector<vector<MazeElem>> Maze::getMap() { return game_map; }
@@ -180,7 +196,7 @@ bool Maze::walkable(int x, int y)
         return false;
 
     _MazeElem d = game_map[x][y].getType();
-    if (d == ROAD || d == LUCKY)
+    if (d == ROAD || d == LUCKY || d == TRAP)
         return true;
 
     return false;
@@ -230,6 +246,18 @@ pair<int, int> Maze::getXY(pair<int, int> point, Direction now)
     int x = point.first + dx[(int)now];
     int y = point.second + dy[(int)now];
     return make_pair(x, y);
+}
+
+void Maze::estPoint(int r, int c, double estpay)
+{
+    if(!isFixedPoint(r,c))
+        game_map[r][c].value = estpay;
+}
+
+bool Maze::isFixedPoint(int r, int c)
+{
+    _MazeElem t = game_map[r][c].getType();
+    return t == WALL || t == TRAP || t == UNDEF;
 }
 
 #define debug_genMap 1
@@ -285,6 +313,64 @@ void Maze::genMap()
 
     setExitPos();
 }
+
+
+#if debug_global
+void Maze::print()
+{
+    cout << "<迷宫打印>" << endl;
+    for (int i=0;i<row;i++)
+    {
+        for (int j=0;j<row;j++)
+        {
+            char ch;
+            switch (game_map[i][j].getType())
+            {
+            case ROAD:
+                ch = ' ';
+                break;
+            case LUCKY:
+                ch = '$';
+                break;
+            case WALL:
+                ch = '*';
+                break;
+            case TRAP:
+                ch = 'O';
+                break;
+            default:
+                ch = 'X';
+                break;
+            }
+            if(i == start.first && j == start.second)
+                ch = '@';
+            else if(i == end.first && j == end.second)
+                ch = 'O';
+            cout<<ch;
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+void Maze::printValue()
+{
+    cout << "<Q table>" << endl;
+    for (int i=0;i<row;i++)
+    {
+        for (int j=0;j<col;j++)
+        {
+            MazeElem t = game_map[i][j];
+            if(walkable(i,j))
+                cout<<""<<fixed << setprecision(2) <<(t.value+t.reward)<<"\t";
+            else
+                cout<<("[   ]\t");
+        }
+        cout<<endl;
+    }
+}
+#endif
+
 
 #if debug_Maze_main
 int main()

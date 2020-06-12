@@ -12,11 +12,15 @@ class MazeElem
 {
 private:
     _MazeElem type;                         //格子类型
-    int value;                              //格子价值
 public:
-    MazeElem(_MazeElem type);
+    //强化学习所需
+    double value;                           //价值(随迭代变化)
+    double reward;                          //奖励(固定)
+public:
+    MazeElem(_MazeElem type = ROAD);
     _MazeElem getType();
-    void setType(_MazeElem tp);
+    void setType(_MazeElem tp, double val = 0);
+    void setType(_MazeElem tp, double val, double rew);
 
     bool operator==(_MazeElem type);
 };
@@ -36,7 +40,7 @@ public:
     QString MapStytle[4][22];//地图风格字符串
 public:
     Maze(int row, int col);
-    Maze(){initialMaze(GAME_ROW,GAME_COL);  genMap(); initialMapStytle();}
+    Maze(){/*initialMaze(GAME_ROW,GAME_COL);  genMap();*/ initialMapStytle();}
     ~Maze();
 
     void genMap();                           //生成随机地图
@@ -47,7 +51,7 @@ public:
     pair<int,int> getEnd(){return end;}
     pair<int,int> genGap(unsigned int _Seed); //随机生成入口和出口
 
-    bool walkable(int x,int y);              //(x,y)是否不为墙
+    bool walkable(int x,int y);               //(x,y)是否不为墙
 
     vector<Direction> getDirections(int x, int y);//返回在当前坐标下一步能走的方向
     
@@ -60,46 +64,12 @@ public:
     void setCharacterPos();//设置角色位置
     void setExitPos();
 
-#if debug
+    //强化学习辅助函数
+    void estPoint(int r, int c, double estpay);       //用于在迭代过程中更新预期值
+    bool isFixedPoint(int r, int c);                  //判断是否为值固定点
+
+#if debug_global
     void print();                             //[测试]:在命令行中打印迷宫
+    void printValue();                        //打印训练的Q表
 #endif
 };
-
-#if debug
-void Maze::print()
-{
-    cout << "<迷宫打印>" << endl;
-    for (int i=0;i<row;i++)
-    {
-        for (int j=0;j<row;j++)
-        {
-            char ch;
-            switch (game_map[i][j].getType())
-            {
-            case ROAD:
-                ch = ' ';
-                break;
-            case LUCKY:
-                ch = '$';
-                break;
-            case WALL:
-                ch = '*';
-                break;
-            case TRAP:
-                ch = 'O';
-                break;
-            default:
-                ch = 'X';
-                break;
-            } 
-            if(i == start.first && j == start.second)
-                ch = '@';
-            else if(i == end.first && j == end.second)
-                ch = 'O';
-            cout<<ch;
-        }
-        cout<<endl;
-    }
-    cout<<endl;
-}
-#endif

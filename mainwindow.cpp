@@ -557,9 +557,9 @@ void MainWindow::CreateMaze_Layout()
     group->stop();
     iNum=1;
 
-    if((sp_h->value()<5||sp_h->value()>58)||(sp_w->value()<5||sp_w->value()>58))
+    if((sp_h->value()<7||sp_h->value()>58)||(sp_w->value()<7||sp_w->value()>58))
     {
-        QMessageBox message(QMessageBox::NoIcon, "警告！", "输入的数据需在5-58之间");
+        QMessageBox message(QMessageBox::NoIcon, "警告！", "输入的数据需在7-58之间");
         message.setIconPixmap(QPixmap(":/info/image/information/warning.png"));
         message.exec();
         return;
@@ -601,9 +601,12 @@ void MainWindow::CreateMaze_Layout()
     m.genMap();
     m.setCharacterPos();
     //m.setExitPos();
-    //m.autoFindPath();
-    ai = new Bfs(m);
+    ai = new QLearning(m);
     ai->solve();
+#if debug_QLearning
+    ai->m.printValue();
+
+#endif
 
     StytleNum=SelectMapStytle->currentIndex();
     ShowMaze_Layout();

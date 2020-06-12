@@ -3,9 +3,9 @@
 
 void AI::output()
 {
-    string s[] = {"x", "上", "右", "下", "左"};
+    string s[] = {"x", "Up", "Right", "Down", "Left"};
     for (auto it : ans)
-        cout << "坐标(" << it.first.first << ", " << it.first.second << ") 下一步：" << s[(int)it.second] << endl;
+        cout << "(" << it.first.first << ", " << it.first.second << ") next: " << s[(int)it.second] << endl;
 }
 
 void Dfs::solve()
@@ -47,11 +47,12 @@ void Dfs::dfs(pair<int, int> p)
 #define debug_bfs 0
 void Bfs::solve()
 {
-    Maze tmp_m = m;
+    visited.clear();
+
+    Maze tmp_m(m);
     AI *tmp;
     pair<int,int> pre;
 
-    visited.clear();
     deque<pair<int, int>> q;
     q.push_back(m.getStart());         //起点加入队列
 
@@ -117,10 +118,124 @@ void Bfs::solve()
         pre = p;
     }
 }
+QLearning::QLearning(Maze maze, int times): AI(maze) {
+    srand(static_cast<unsigned>(time(NULL)));
+    visited.clear();
+    this->times = m.row*2+5;
+    /*
+    decision = new Direction * [m.row];
+    for(int i=0;i<m.row;i++)
+    {
+        decision[i] = new Direction[m.col];
+        //memset(decision[i],0,sizeof(decision[i]));
+        for(int j=0;j<m.col;j++)
+            decision[i][j] = ERR;
+    }*/
+    decision.resize(m.row);
+    for(int i=0;i<m.row;i++)
+        decision[i].resize(m.col);
+}
 
 void QLearning::solve()
 {
+    visited.clear();
+    ans.clear();
+    int row = m.getRow();
+    int col = m.getCol();
+    int _times = times;
+    while(_times--)                     //训练
+    {
+        _cSeq++;
+        for(int s=0;s < row+col-1;s++)  //以对角线方式遍历
+        {
+            int r = 0;
+            int c = s - r;
+            while(r<row && c>0)
+            {
+                if(c<col && !m.isFixedPoint(r,c)) //只有路和宝箱才需要做决定，其它就over了
+                    decision[r][c] = QLearningDecision(r,c);
+                r++;
+                c--;
+            }
+        }
+    }
+#if debug_QLearning
+    printDirection();
+#endif
+    getResult();  
 }
+
+Direction QLearning::QLearningDecision(int r, int c)
+{
+    pair<int,int> curPos = make_pair(r,c);
+    double estPay = -INF;
+    vector<Direction> directions;
+    double pay[5] = {};
+    int max_i = DOWN;
+    for(int i=UP;i <= LEFT;i++)
+    {
+        pair<int,int> nextPos = m.getXY(curPos, (Direction)i);
+        int x = nextPos.first;
+        int y = nextPos.second;
+        if(!m.walkable(x,y))
+        {
+            pay[i] = -INF;
+            continue;
+        }
+
+        MazeElem elem = m.game_map[x][y];
+        pay[i] = (1-LEARNING_RATE)*m.game_map[r][c].value
+                + LEARNING_RATE*(elem.reward+DISCOUNT*elem.value);
+        if(estPay < pay[i])
+        {
+            estPay = pay[i];
+            max_i = i;
+        }
+
+        if(pay[i] > -INF/2)
+            directions.push_back(Direction(i));
+    }
+    //Direction direction = directions[rand()%directions.size()];
+    Direction direction = Direction(max_i);
+    m.estPoint(r,c,estPay);
+    return direction;
+}
+
+void QLearning::getResult()
+{
+    visited.clear();
+    pair<int,int> cur_pos = m.getStart();
+    while(cur_pos != m.getEnd())
+    {
+        int x = cur_pos.first;
+        int y = cur_pos.second;
+        if(visited[cur_pos] == 1)
+            break;
+        visited[cur_pos] = 1;
+        ans.push_back(make_pair(cur_pos, decision[x][y]));
+        cur_pos = m.getXY(cur_pos,decision[x][y]);
+    }
+}
+
+#if debug_global
+    void QLearning::printDirection()
+    {
+        string s[] = {"x", "^", ">", "v", "<"};
+        cout << "<Direction table>" << endl;
+        for (int i=0;i<m.row;i++)
+        {
+            for (int j=0;j<m.col;j++)
+            {
+                if(m.walkable(i,j))
+                    cout<<s[decision[i][j]]<<" ";
+                else
+                    cout<<("0 ");
+            }
+            cout<<endl;
+        }
+    }
+
+#endif
 
 #if debug_AI_main
 int main()
@@ -128,9 +243,9 @@ int main()
     Maze maze(10,10);
     maze.print();
     
-    AI *ai = new Dfs(maze);
+    AI *ai = new QLearning(maze);
     ai->solve();
-    ai->output();
+    ai->m.printValue();
 
     return 0;
 }
