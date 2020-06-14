@@ -156,10 +156,12 @@ void MainWindow::initialControlWidget()
    QLabel *label_w=new QLabel;
     QLabel *label_h=new QLabel;
      QLabel *label_bs=new QLabel;
+    label_bsc = new QLabel;
 
     label_w->setStyleSheet("background-color:transparent");
     label_h->setStyleSheet("background-color:transparent");
     label_bs->setStyleSheet("background-color:transparent");
+    label_bsc->setStyleSheet("background-color:transparent");
     QLabel *label_blank[10];
     for(int i=0;i<10;i++)
     {
@@ -178,6 +180,7 @@ void MainWindow::initialControlWidget()
     label_w->setText("迷宫宽度");
     label_h->setText("迷宫高度");
     label_bs->setText("当前已走步数：");
+    label_bsc->setText("0");
     label_select->setText("选择人物");
     sp_w=new QSpinBox(this);
     sp_h=new QSpinBox(this);
@@ -224,6 +227,7 @@ void MainWindow::initialControlWidget()
     gLayout_Control->addWidget(label_w,0,0);
     gLayout_Control->addWidget(label_h,1,0);
     gLayout_Control->addWidget(label_bs,2,0);
+    gLayout_Control->addWidget(label_bsc,2,1);
     gLayout_Control->addWidget(label_blank[0],0,3);
 
     gLayout_Control->addWidget(sp_w,0,1);
@@ -1283,6 +1287,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             CreateMaze_Layout();
             return;
         }
+        MainWindow::label_bsc->setText(intToQString(MainWindow::bushu));
     }
     else if(surface->Dungeonisok)//地牢模式
     {

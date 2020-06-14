@@ -74,6 +74,7 @@ private:
     QSpinBox *sp_h;
 
     QLabel *label_Stytle;//地图风格显示
+    QLabel *label_bsc;
     QComboBox *SelectMapStytle;//地图风格选择
     QPushButton *AIAnimationButton;//AI操作
     QPushButton *AutoMoveButton;//自动寻路
