@@ -560,6 +560,7 @@ void MainWindow::CreateMaze_Layout()
     timer->stop();
     group->stop();
     iNum=1;
+    MainWindow::label_bsc->setText(intToQString(0));
 
     if((sp_h->value()<7||sp_h->value()>58)||(sp_w->value()<7||sp_w->value()>58))
     {
