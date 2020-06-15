@@ -154,12 +154,12 @@
         <file>music/coin.mp3</file>
         <file>music/count_down.mp3</file>
         <file>music/flagpole.wav</file>
-        <file>music/main_theme.mp3</file>
         <file>music/powerup.mp3</file>
         <file>music/stomp.mp3</file>
         <file>music/one_up.mp3</file>
         <file>music/pipe.mp3</file>
         <file>music/maze_main_theme.mp3</file>
+        <file>music/main_theme.mp3</file>
     </qresource>
     <qresource prefix="/interface">
         <file>image/interface/Controlbg.png</file>

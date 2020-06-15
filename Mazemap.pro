@@ -29,4 +29,4 @@ RESOURCES += \
     sources.qrc
 QT += multimedia
 CONFIG += resources_big
-RC_ICONS = Maze&Dungeon.ico
+RC_ICONS = Maze&Dungeon1.ico
