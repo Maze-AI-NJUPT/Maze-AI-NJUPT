@@ -1865,7 +1865,7 @@ void MainWindow::timeStart()
     if(radio[0]->isChecked())
         ai = new Dfs(m);
     else if(radio[1]->isChecked())
-        ai = new Bfs(m);
+        ai = new Bfs(m,true);
     else
         ai = new QLearning(m);
     ai->solve();

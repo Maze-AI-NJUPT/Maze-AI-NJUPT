@@ -27,9 +27,9 @@ class Bfs : public AI
 {
 private:
     map<pair<int, int>, int> visited;
-
+    bool simplePath;
 public:
-    Bfs(Maze maze) : AI(maze) {visited.clear();}
+    Bfs(Maze maze, bool simplePath = false) : AI(maze) {this->simplePath=simplePath;visited.clear();}
     void solve();
 };
 

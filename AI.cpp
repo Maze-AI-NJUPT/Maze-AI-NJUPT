@@ -62,11 +62,14 @@ void Bfs::solve()
         q.pop_front();
 
         /*需要从上一位置来到当前位置*/
-        tmp_m.start = pre;
-        tmp_m.end = p;
-        tmp = new Dfs(tmp_m,true);
-        tmp->solve();
-        ans.insert(ans.end(),tmp->ans.begin(),tmp->ans.end());
+        if(!simplePath)
+        {
+            tmp_m.start = pre;
+            tmp_m.end = p;
+            tmp = new Dfs(tmp_m,true);
+            tmp->solve();
+            ans.insert(ans.end(),tmp->ans.begin(),tmp->ans.end());
+        }
 
         #if debug_bfs
         cout<<endl<<"<dfs>"<<endl;
