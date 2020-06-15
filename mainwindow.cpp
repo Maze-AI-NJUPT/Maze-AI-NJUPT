@@ -81,7 +81,6 @@ void MainWindow::initialWindow_Layout()
     issurface=true;
     isAIAnimationButton=false;
     isAutoMoveButton=false;
-    isBfsMoveButton=false;
     display_it=0;
 
     initialControlWidget();
@@ -196,30 +195,41 @@ void MainWindow::initialControlWidget()
     SelectMapStytle->setCurrentIndex(2);
     connect(SelectMapStytle,SIGNAL(currentIndexChanged(int)),this,SLOT(MapStytleSet()));
     //currentIndexChanged(int) 中的int 去掉，就不能被识别为信号
+
+    //按钮初始化
     QPushButton *GenerateButton=new QPushButton(this);
     quitButton=new QPushButton(this);
     AIAnimationButton=new QPushButton(this);
     AutoMoveButton=new QPushButton(this);
-    BfsMoveButton=new QPushButton(this);
+
+    // 单选按钮
+    radio[0] = new QRadioButton("深度优先",this);
+    radio[0]->setChecked(true);
+    radio[1] = new QRadioButton("广度优先",this);
+    radio[2] = new QRadioButton("QLearning",this);
+    radio_group = new QButtonGroup(this);
+    radio_group->addButton(radio[0]);
+    radio_group->addButton(radio[1]);
+    radio_group->addButton(radio[2]);
+
 
     AIAnimationButton->setEnabled(false);
     AutoMoveButton->setEnabled(false);
-    BfsMoveButton->setEnabled(false);
+
     GenerateButton->setText("生成迷宫");
-    AutoMoveButton->setText("自动寻路");
-    BfsMoveButton->setText("广度优先");
-    AIAnimationButton->setText("智能寻路");
+    AutoMoveButton->setText("寻路路径");
+    AIAnimationButton->setText("AI操作");
     quitButton->setText("主菜单");
     quitButton->setEnabled(false);
     GenerateButton->setStyleSheet(button_style);
     AutoMoveButton->setStyleSheet(button_style);
-    BfsMoveButton->setStyleSheet(button_style);
+
     AIAnimationButton->setStyleSheet(button_style);
     quitButton->setStyleSheet(button_style);
 
     connect(GenerateButton,SIGNAL(clicked()),this,SLOT(CreateMaze_Layout()));
     connect(AutoMoveButton,SIGNAL(clicked()),this,SLOT(timeStart()));
-    //connect(BfsMoveButton,SIGNAL(clicked()),this,SLOT(timeStart()));
+
 
     connect(AIAnimationButton,SIGNAL(clicked()),this,SLOT(ShowAnimation()));
     connect(quitButton,SIGNAL(clicked()),this,SLOT(quit()));
@@ -247,12 +257,14 @@ void MainWindow::initialControlWidget()
 
     gLayout_Control->addWidget(GenerateButton,5,0);
 
-    gLayout_Control->addWidget(AutoMoveButton,5,1);
-    gLayout_Control->addWidget(BfsMoveButton,6,0);
+    gLayout_Control->addWidget(radio[0],6,0);
+    gLayout_Control->addWidget(radio[1],6,1);
+    gLayout_Control->addWidget(radio[2],6,2);
+    gLayout_Control->addWidget(AutoMoveButton,8,0);
 
-    gLayout_Control->addWidget(AIAnimationButton,6,1);
+    gLayout_Control->addWidget(AIAnimationButton,8,1);
 
-    gLayout_Control->addWidget(label_blank[4],8,0,1,3);
+    //gLayout_Control->addWidget(label_blank[4],8,0,1,3);
     gLayout_Control->addWidget(quitButton,9,1);
     Controlwidget->setLayout(gLayout_Control);
     Controlwidget->hide();
@@ -261,8 +273,8 @@ void MainWindow::resetMaze()
 {
     AIAnimationButton->setEnabled(false);
     AutoMoveButton->setEnabled(false);
-    BfsMoveButton->setEnabled(false);
-    quitButton->setEnabled(false);
+
+    //quitButton->setEnabled(false);
     sp_h->setValue(0);
     sp_w->setValue(0);
    // sp_bs->setValue(0);
@@ -606,12 +618,7 @@ void MainWindow::CreateMaze_Layout()
     m.genMap();
     m.setCharacterPos();
     //m.setExitPos();
-    ai = new QLearning(m);
-    ai->solve();
-#if debug_QLearning
-    ai->m.printValue();
 
-#endif
 
     StytleNum=SelectMapStytle->currentIndex();
     ShowMaze_Layout();
@@ -621,7 +628,7 @@ void MainWindow::CreateMaze_Layout()
 
     AIAnimationButton->setEnabled(true);
     AutoMoveButton->setEnabled(true);
-    BfsMoveButton->setEnabled(true);
+
     quitButton->setEnabled(true);
     isPlay=true;
 }
@@ -1825,10 +1832,19 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
 void MainWindow::ShowAnimation()
 {
+    if(radio[0]->isChecked())
+        ai = new Dfs(m);
+    else if(radio[1]->isChecked())
+        ai = new Bfs(m);
+    else
+        ai = new QLearning(m);
+    ai->solve();
+#if debug_QLearning
+    ai->m.printValue();
+#endif
     group->clear();//动画组清空
     isAIAnimationButton=true;
     isAutoMoveButton=false;
-   isBfsMoveButton=false;
     AutoMoveButton->setEnabled(false);
     for(int i=0; i<ai->ans.size()-1;i++)
     {
@@ -1846,9 +1862,19 @@ void MainWindow::ShowAnimation()
 
 void MainWindow::timeStart()
 {
+    if(radio[0]->isChecked())
+        ai = new Dfs(m);
+    else if(radio[1]->isChecked())
+        ai = new Bfs(m);
+    else
+        ai = new QLearning(m);
+    ai->solve();
+#if debug_QLearning
+    ai->m.printValue();
+#endif
+
     isAutoMoveButton=true;
     isAIAnimationButton=false;
-    isBfsMoveButton=false;
     AIAnimationButton->setEnabled(false);
     timer->start(50);
 }
@@ -2229,7 +2255,6 @@ void MainWindow::ShowPath()
             timer->stop();
             AIAnimationButton->setEnabled(true);
             isAutoMoveButton=false;
-            isBfsMoveButton=false;
             isAIAnimationButton=false;
             return;
         }

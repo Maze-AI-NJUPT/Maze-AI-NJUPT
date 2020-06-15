@@ -7,6 +7,8 @@
 #include <QWidget>
 #include <QSpinBox>
 #include <QPushButton>
+#include <QRadioButton>
+#include <QButtonGroup>
 #include <QLabel>
 #include <QComboBox>
 #include <QLineEdit>
@@ -64,7 +66,6 @@ private:
     bool issurface;//开始界面标识（用于标识开始界面已加载完成）
     bool isAIAnimationButton;//AI移动标识
     bool isAutoMoveButton;//自动寻路标识
-    bool isBfsMoveButton;//广度优先标识
 private:
     Maze m;//迷宫类
     AI *ai;
@@ -78,7 +79,10 @@ private:
     QComboBox *SelectMapStytle;//地图风格选择
     QPushButton *AIAnimationButton;//AI操作
     QPushButton *AutoMoveButton;//自动寻路
-    QPushButton *BfsMoveButton;//广度优先寻路
+
+    QRadioButton *radio[3];    //三种算法选择
+    QButtonGroup *radio_group;
+
     QPushButton *quitButton;//返回主菜单按钮
 
     QSequentialAnimationGroup *group;//AI操作动画组
