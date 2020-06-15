@@ -1,11 +1,15 @@
 #include "AI.h"
 #include<deque>
-
+/**
+ * 获取当前方向的反方向
+ */
 Direction reverseDirection(Direction d)
 {
     return (Direction)(((int)d + 1) % 4 + 1);
 }
-
+/**
+ * 在命令行打印寻路结果
+ */
 void AI::output()
 {
     string s[] = {"x", "Up", "Right", "Down", "Left"};
@@ -38,7 +42,9 @@ void Dfs::dfs(pair<int, int> p)
             continue;
 
         ans.push_back(make_pair(p, it));
+
         dfs(next);
+
         if (getAns)
             break;
         if(option == 2)
@@ -156,15 +162,6 @@ QLearning::QLearning(Maze maze, int times,int option): AI(maze,option) {
     srand(static_cast<unsigned>(time(NULL)));
     visited.clear();
     this->times = m.row*2+5;
-    /*
-    decision = new Direction * [m.row];
-    for(int i=0;i<m.row;i++)
-    {
-        decision[i] = new Direction[m.col];
-        //memset(decision[i],0,sizeof(decision[i]));
-        for(int j=0;j<m.col;j++)
-            decision[i][j] = ERR;
-    }*/
     decision.resize(m.row);
     for(int i=0;i<m.row;i++)
         decision[i].resize(m.col);

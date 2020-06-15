@@ -46,7 +46,7 @@ bool MazeElem::operator==(_MazeElem type)
     return this->type == type;
 }
 
-Maze::Maze(int row = GAME_ROW, int col = GAME_COL)
+Maze::Maze(int row, int col)
 {
     initialMaze(row,col);
     genMap();
@@ -65,7 +65,7 @@ void Maze::initialMaze(int row,int col)
         game_map[i].resize(col);
 }
 
-void Maze::initialMapStytle() //初始化地图风格字符串
+void Maze::initialMapStytle()     //初始化地图风格字符串
 {
     MapStytle[0][0]="border-image: url(:/new/image/MagicGril/down1.png);";
     MapStytle[0][1]="border-image: url(:/new/image/MagicGril/down2.png);";
@@ -122,55 +122,12 @@ void Maze::initialMapStytle() //初始化地图风格字符串
 
 void Maze::setCharacterPos()
 {
-    //随机设定方式
-//   point temp;
-//   QStack<point> s;
-//   for(int i=0;i<height;i++)
-//   {
-//       for(int j=0;j<width;j++)
-//       {
-//           if(Matrix[i][j].state==1)
-//           {
-//               temp.i=i;
-//               temp.j=j;
-//               s.push(temp);
-//           }
-//       }
-//   }
-//   int randNum=qrand()%s.size();
-//   x=s[randNum].i;
-//   y=s[randNum].j;
    gamer.first=3;
    gamer.second=3;
 }
 void Maze::setExitPos()
 {
-    //随机设定方式
-//    point temp;
-//    QStack<point> s;
-//    for(int i=0;i<height;i++)
-//    {
-//        for(int j=0;j<width;j++)
-//        {
-//            if(Matrix[i][j].state==1)
-//            {
-//                temp.i=i;
-//                temp.j=j;
-//                s.push(temp);
-//            }
-//        }
-//    }
-//    while(true)
-//    {
-//        int randNum=qrand()%s.size();
-//        exit_x=s[randNum].i;
-//        exit_y=s[randNum].j;
-//        if(exit_x!=x||exit_y!=y)
-//        {
-//            break;
-//        }
-//    }
-    /*
+    /* 随机生成坐标
     pair<int,int> ed;
     do
     {
@@ -272,12 +229,12 @@ void Maze::genMap()
 
     srand(time(NULL)); //随机种子
     pair<int, int> st;
-    /*设成了（1，1）*/
+    /*起点设成了（3，3）*/
     st = make_pair(3,3);
 
     this->start = st;
 
-    for (int i = 0; i < row; i++)
+    for (int i = 0; i < row; i++)                //初始化全部格子为墙
         for (int j = 0; j < col; j++)
             game_map[i][j].setType(WALL);
     
@@ -285,7 +242,7 @@ void Maze::genMap()
 
     int x = st.first, y = st.second;
     vector<pair<pair<int,int>,Direction>> blocks;
-    getWall(x, y, blocks);                  //获取与起点相邻的墙体（除去越界的）
+    getWall(x, y, blocks);                       //获取与起点相邻的墙体（除去越界的）
 
     while (blocks.size())
     {
@@ -298,7 +255,9 @@ void Maze::genMap()
         // 穿墙。起点->(x,y)->(x1,y1)构成一条直线
         pair<int, int> point = make_pair(x, y);
         point = getXY(point, blocks[rand_num].second);
-        int x1 = point.first, y1 = point.second;
+
+        int x1 = point.first;
+        int y1 = point.second;
 
         if (game_map[x1][y1].getType() == WALL)
         {
@@ -310,8 +269,7 @@ void Maze::genMap()
         blocks.erase(blocks.begin() + rand_num);
     }
 
-
-    setExitPos();
+    setExitPos();   //设置出口坐标
 }
 
 
