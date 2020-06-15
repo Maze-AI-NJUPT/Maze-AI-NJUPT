@@ -32,29 +32,29 @@ interface::interface(QWidget *parent) :
                          "QPushButton:pressed{background-color:aquamarine;border-style:inset;}";
 
     button_classical= new QPushButton(this);//开始界面上的play按钮
-    button_classical->setGeometry(360,285,160,50);
-    button_classical->setText("逃出升天");
+    button_classical->setGeometry(360,285,180,50);
+    button_classical->setText("开始游戏");
     button_classical->setStyleSheet(button_style);
     button_classical->setFont(font);
     connect(button_classical,SIGNAL(clicked()),this,SLOT(classicalStart()));
 
 
     button_Dungeon=new QPushButton(this);
-    button_Dungeon->setGeometry(360,335,160,50);
+    /*button_Dungeon->setGeometry(360,335,160,50);*/
     button_Dungeon->setText("勇闯天涯");
     button_Dungeon->setStyleSheet(button_style);
     button_Dungeon->setFont(font);
     connect(button_Dungeon,SIGNAL(clicked()),this,SLOT(DungeonStart()));
 
     button_Quit=new QPushButton(this);
-    button_Quit->setGeometry(360,385,160,50);
+    button_Quit->setGeometry(360,335,180,50);
     button_Quit->setText("离开游戏");
     button_Quit->setStyleSheet(button_style);
     button_Quit->setFont(font);
     connect(button_Quit,SIGNAL(clicked()),this,SLOT(Quit()));
 
     button_About=new QPushButton(this);
-    button_About->setGeometry(360,435,160,50);
+    button_About->setGeometry(360,385,180,50);
     button_About->setText("制作人");
     button_About->setStyleSheet(button_style);
     button_About->setFont(font);

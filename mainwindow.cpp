@@ -19,11 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QTime time=QTime::currentTime();
     qsrand(time.msec()+time.second()*1000);
 
-    qDebug()<<MainWindow::bushu;
+    //qDebug()<<MainWindow::bushu;
 
     MainWindow::bushu = 0;
 
-    qDebug()<<MainWindow::bushu;
+    //qDebug()<<MainWindow::bushu;
 
 }
 
