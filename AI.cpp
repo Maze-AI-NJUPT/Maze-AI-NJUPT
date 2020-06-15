@@ -1,6 +1,11 @@
 #include "AI.h"
 #include<deque>
 
+Direction reverseDirection(Direction d)
+{
+    return (Direction)(((int)d + 1) % 4 + 1);
+}
+
 void AI::output()
 {
     string s[] = {"x", "Up", "Right", "Down", "Left"};
@@ -36,12 +41,15 @@ void Dfs::dfs(pair<int, int> p)
         dfs(next);
         if (getAns)
             break;
-        if(bestPath == true)
+        if(option == 2)
             ans.pop_back();
-        else
-            ans.push_back(make_pair(next, (Direction)(((int)it + 1) % 4 + 1)));
+        else if(option == 0)
+            ans.push_back(make_pair(next, reverseDirection(it)));
         visited[next] = 0;
     }
+
+    if(d.size()==1 && option == 1)    //使寻路路径中的叶子结点也能被填充
+        ans.push_back(make_pair(p, ERR));
 }
 
 #define debug_bfs 0
@@ -62,11 +70,11 @@ void Bfs::solve()
         q.pop_front();
 
         /*需要从上一位置来到当前位置*/
-        if(!simplePath)
+        if(option == 0)
         {
             tmp_m.start = pre;
             tmp_m.end = p;
-            tmp = new Dfs(tmp_m,true);
+            tmp = new Dfs(tmp_m,2);
             tmp->solve();
             ans.insert(ans.end(),tmp->ans.begin(),tmp->ans.end());
         }
@@ -98,15 +106,19 @@ void Bfs::solve()
             cout<<p.first<<","<<p.second<<"  "<<s[it]<<endl;
             #endif
 
+            Direction reverse = reverseDirection(it);  //反方向
+            decision[next.first][next.second] = reverse;
+
             if (next == m.getEnd())
             {
                 #if debug_bfs
                 cout<<ans.size()<<endl;
                 #endif
-
+                if(option == 2)
+                    getBestPath();
                 return;
             }
-            Direction reverse = (Direction)(((int)it + 1) % 4 + 1);  //反方向
+
             ans.push_back(make_pair(next, reverse));        //更新寻路结果，返回上一步
 
             auto next_d = m.getDirections(next.first,next.second);
@@ -121,7 +133,26 @@ void Bfs::solve()
         pre = p;
     }
 }
-QLearning::QLearning(Maze maze, int times): AI(maze) {
+/**
+ * @brief Bfs::getBestPath
+ * 从反的方向矩阵中获得最佳路径
+ */
+void Bfs::getBestPath()
+{
+    ans.clear();
+    pair<int,int> cur_pos = m.getEnd();
+    while(cur_pos != m.getStart())
+    {
+        int x = cur_pos.first;
+        int y = cur_pos.second;
+        pair<int,int> next_pos = m.getXY(cur_pos,decision[x][y]);
+        ans.push_back(make_pair(next_pos,reverseDirection(decision[x][y])));
+        cur_pos = next_pos;
+    }
+    reverse(ans.begin(),ans.end());
+}
+
+QLearning::QLearning(Maze maze, int times,int option): AI(maze,option) {
     srand(static_cast<unsigned>(time(NULL)));
     visited.clear();
     this->times = m.row*2+5;

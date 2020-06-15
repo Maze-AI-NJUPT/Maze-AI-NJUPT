@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QLabel>
 #include <QComboBox>
 #include <QLineEdit>
@@ -82,6 +83,7 @@ private:
 
     QRadioButton *radio[3];    //三种算法选择
     QButtonGroup *radio_group;
+    QCheckBox *not_bestPath_check;
 
     QPushButton *quitButton;//返回主菜单按钮
 

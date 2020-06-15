@@ -211,8 +211,8 @@ void MainWindow::initialControlWidget()
     radio_group->addButton(radio[0]);
     radio_group->addButton(radio[1]);
     radio_group->addButton(radio[2]);
-
-
+    not_bestPath_check = new QCheckBox("显示寻路过程",this);
+    not_bestPath_check->setChecked(true);
     AIAnimationButton->setEnabled(false);
     AutoMoveButton->setEnabled(false);
 
@@ -256,7 +256,7 @@ void MainWindow::initialControlWidget()
     gLayout_Control->addWidget(label_Stytle,4,0,1,2);
 
     gLayout_Control->addWidget(GenerateButton,5,0);
-
+    gLayout_Control->addWidget(not_bestPath_check,5,1);
     gLayout_Control->addWidget(radio[0],6,0);
     gLayout_Control->addWidget(radio[1],6,1);
     gLayout_Control->addWidget(radio[2],6,2);
@@ -1832,12 +1832,15 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
 void MainWindow::ShowAnimation()
 {
+    int option =0;
+    if(!not_bestPath_check->isChecked())
+        option = 2;
     if(radio[0]->isChecked())
-        ai = new Dfs(m);
+        ai = new Dfs(m,option);
     else if(radio[1]->isChecked())
-        ai = new Bfs(m);
+        ai = new Bfs(m,option);
     else
-        ai = new QLearning(m);
+        ai = new QLearning(m,0,option);
     ai->solve();
 #if debug_QLearning
     ai->m.printValue();
@@ -1862,12 +1865,15 @@ void MainWindow::ShowAnimation()
 
 void MainWindow::timeStart()
 {
+    int option = 1;
+    if(!not_bestPath_check->isChecked())
+        option = 2;
     if(radio[0]->isChecked())
-        ai = new Dfs(m);
+        ai = new Dfs(m,option);
     else if(radio[1]->isChecked())
-        ai = new Bfs(m,true);
+        ai = new Bfs(m,option);
     else
-        ai = new QLearning(m);
+        ai = new QLearning(m,0,option);
     ai->solve();
 #if debug_QLearning
     ai->m.printValue();
