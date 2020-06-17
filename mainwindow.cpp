@@ -36,9 +36,9 @@ void MainWindow::initialWindow_Layout()
     hLayout->setContentsMargins(0,0,0,0);
     hLayout->setSpacing(0);
     //初始化迷宫砖块
-    for(int i=0; i <60 ;i++)
+    for(int i=0; i <max_map_size ;i++)
     {
-        for(int j=0; j<60; j++)
+        for(int j=0; j<max_map_size; j++)
         {
             MazeWidget[i][j]=new QWidget(this);
             gLayout_Map->addWidget(MazeWidget[i][j],i,j);
@@ -248,9 +248,9 @@ void MainWindow::CreateMaze_Layout()
     iNum=1;
     MainWindow::label_bsc->setText(intToQString(0));
 
-    if((sp_h->value()<7||sp_h->value()>100)||(sp_w->value()<7||sp_w->value()>100))
+    if((sp_h->value()<7||sp_h->value()>77)||(sp_w->value()<7||sp_w->value()>77))
     {
-        QMessageBox message(QMessageBox::NoIcon, "警告！", "输入的数据需在7-100之间");
+        QMessageBox message(QMessageBox::NoIcon, "警告！", "输入的数据需在7-77之间");
         message.setIconPixmap(QPixmap(":/info/image/information/warning.png"));
         message.exec();
         return;
@@ -291,6 +291,7 @@ void MainWindow::CreateMaze_Layout()
     m.initialMaze(temph,tempw);
     m.genMap();
     m.setCharacterPos();
+    //m.print();
     //m.setExitPos();
 
 

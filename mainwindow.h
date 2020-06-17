@@ -25,6 +25,7 @@
 #include "AI.h"
 
 #include "interface.h"
+const int max_map_size = 105;
 
 class MainWindow : public QMainWindow
 {
@@ -44,7 +45,7 @@ private:
 private:
     interface *surface;//开始界面
     QWidget *MainWidget;//中心窗口
-    QWidget *MazeWidget[60][60];//地图窗口数组
+    QWidget *MazeWidget[max_map_size][max_map_size];//地图窗口数组
     QWidget *People;//角色
     QString character[12];//角色图片字符串
     QGridLayout *gLayout_Map;//地图网格布局管理器
