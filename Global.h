@@ -2,7 +2,7 @@
 #define debug_global 1              // 1 -> debug, 0 -> release
 #define debug_Maze_main 0           //debug _Maze.cpp
 #define debug_AI_main 0             //debug AI.cpp
-#define debug_QLearning 1
+#define debug_QLearning 0
 
 #include<QDebug>
 

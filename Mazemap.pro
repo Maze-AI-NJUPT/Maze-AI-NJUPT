@@ -10,15 +10,11 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     interface.cpp \
-    Dungeon.cpp \
-    storewidget.cpp \
     _Maze.cpp \
     AI.cpp
 
 HEADERS  += mainwindow.h \
     interface.h \
-    Dungeon.h \
-    storewidget.h \
     _Maze.h \
     AI.h \
     Global.h

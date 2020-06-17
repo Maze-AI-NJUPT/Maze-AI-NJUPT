@@ -38,14 +38,6 @@ interface::interface(QWidget *parent) :
     button_classical->setFont(font);
     connect(button_classical,SIGNAL(clicked()),this,SLOT(classicalStart()));
 
-
-    button_Dungeon=new QPushButton(this);
-    /*button_Dungeon->setGeometry(360,335,160,50);*/
-    button_Dungeon->setText("勇闯天涯");
-    button_Dungeon->setStyleSheet(button_style);
-    button_Dungeon->setFont(font);
-    connect(button_Dungeon,SIGNAL(clicked()),this,SLOT(DungeonStart()));
-
     button_Quit=new QPushButton(this);
     button_Quit->setGeometry(360,335,180,50);
     button_Quit->setText("离开游戏");
@@ -62,7 +54,6 @@ interface::interface(QWidget *parent) :
 
     isok=false;
     classicalisok=false;
-    Dungeonisok=false;
 
     BGM=new QMediaPlayer(this);
     BGM->setMedia(QUrl("qrc:/music/music/maze_main_theme.mp3"));//相对路径
@@ -100,7 +91,6 @@ void interface::paintEvent(QPaintEvent*)
 void interface::showMianMenu()
 {
     button_classical->show();
-    button_Dungeon->show();
     button_Quit->show();
     button_About->show();
 }
@@ -108,7 +98,6 @@ void interface::showMianMenu()
 void interface::classicalStart()
 {
     button_classical->hide();//play按钮隐藏
-    button_Dungeon->hide();
     button_Quit->hide();
     button_About->hide();
     msgLabel->show();//提示消息显示
@@ -116,18 +105,6 @@ void interface::classicalStart()
     timer->start(100);//启动计数器
     probar->show();//进度前显示
     classicalisok=true;
-}
-
-void interface::DungeonStart()
-{
-    button_classical->hide();//play按钮隐藏
-    button_Dungeon->hide();
-    button_Quit->hide();
-    button_About->hide();
-    msgLabel->show();//提示消息显示
-    timer->start(100);//启动计数器
-    probar->show();//进度前显示
-    Dungeonisok=true;
 }
 
 void interface::loading()
