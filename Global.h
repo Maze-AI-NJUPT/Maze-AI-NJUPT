@@ -1,10 +1,19 @@
+#ifndef GLOBAL_H
+#define GLOBAL_H
+
 /* 配置全局信息 */
 #define debug_global 1              // 1 -> debug, 0 -> release
 #define debug_Maze_main 0           //debug _Maze.cpp
 #define debug_AI_main 0             //debug AI.cpp
-#define debug_QLearning 0
 
+#define debug_QLearning 1
+#define QLearning_select 0
+
+#define QT 1
+
+#if QT
 #include<QDebug>
+#endif
 
 const int INF = 0x3f4f5f6f;
 
@@ -25,8 +34,10 @@ enum _MazeElem{
 
 /* 强化学习参数 */
 const double LEARNING_RATE = 0.9;   //学习率
-const double DISCOUNT = 0.99;       //折扣因子
-//const double EPSILON = 1;
+const double DISCOUNT = 0.9;        //折扣因子
+const double EPSILON = 0.999;
+const double LAMBDA = 0.9;          //Watkins's Q(λ)中的 λ 
+
 const int TIMES = 125;              //训练次数(不使用，根据地图大小自适应)
 
 const double V_DEST = 1;            //终点奖励
@@ -34,3 +45,4 @@ const double V_TRAP = -1;           //陷阱奖励
 const double V_ROAD = 0;            //道路奖励
 const double V_WALL = -1;           //墙壁奖励(不使用，训练过程智能体不会往墙壁走)
 const double V_LUCKY = 0.5;         //宝箱奖励
+#endif

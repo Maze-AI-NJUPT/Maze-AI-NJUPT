@@ -82,7 +82,7 @@ private:
     QPushButton *AIAnimationButton;//AI操作
     QPushButton *AutoMoveButton;//自动寻路
 
-    QRadioButton *radio[3];    //三种算法选择
+    QRadioButton *radio[4];    //四种算法选择
     QButtonGroup *radio_group;
     QCheckBox *not_bestPath_check;
 

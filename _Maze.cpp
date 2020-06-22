@@ -1,9 +1,13 @@
+#ifndef MAZE_CPP
+#define MAZE_CPP
+
 #include "_Maze.h"
 #include <time.h>
 #include <map>
 #include <assert.h>
 #include<stdio.h>
 #include<iomanip>
+
 
 MazeElem::MazeElem(_MazeElem type)
 {
@@ -276,7 +280,7 @@ void Maze::genMap()
 #if debug_global
 void Maze::print()
 {
-    cout << "<迷宫打印>" << endl;
+    cout << "<Maze map>" << endl;
     for (int i=0;i<row;i++)
     {
         for (int j=0;j<row;j++)
@@ -338,4 +342,6 @@ int main()
     maze.genMap();
     maze.print();
 }
+#endif
+
 #endif

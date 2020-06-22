@@ -134,7 +134,8 @@ void MainWindow::initialControlWidget()
     label_select->setText("选择人物");
     sp_w=new QSpinBox(this);
     sp_h=new QSpinBox(this);
-
+    sp_w->setValue(25);
+    sp_h->setValue(25);
 
     sp_w->setStyleSheet("background-color:transparent");
     sp_h->setStyleSheet("background-color:transparent");
@@ -157,10 +158,12 @@ void MainWindow::initialControlWidget()
     radio[0]->setChecked(true);
     radio[1] = new QRadioButton("广度优先",this);
     radio[2] = new QRadioButton("QLearning",this);
+    radio[3] = new QRadioButton("QLambda",this);
     radio_group = new QButtonGroup(this);
     radio_group->addButton(radio[0]);
     radio_group->addButton(radio[1]);
     radio_group->addButton(radio[2]);
+    radio_group->addButton(radio[3]);
     not_bestPath_check = new QCheckBox("显示寻路过程",this);
     not_bestPath_check->setChecked(true);
     AIAnimationButton->setEnabled(false);
@@ -207,6 +210,7 @@ void MainWindow::initialControlWidget()
     gLayout_Control->addWidget(radio[0],6,0);
     gLayout_Control->addWidget(radio[1],6,1);
     gLayout_Control->addWidget(radio[2],6,2);
+    gLayout_Control->addWidget(radio[3],6,3);
     gLayout_Control->addWidget(AutoMoveButton,8,0);
 
     gLayout_Control->addWidget(AIAnimationButton,8,1);
@@ -248,7 +252,7 @@ void MainWindow::CreateMaze_Layout()
     iNum=1;
     MainWindow::label_bsc->setText(intToQString(0));
 
-    if((sp_h->value()<7||sp_h->value()>77)||(sp_w->value()<7||sp_w->value()>77))
+    if((sp_h->value()<7||sp_h->value()>177)||(sp_w->value()<7||sp_w->value()>177))
     {
         QMessageBox message(QMessageBox::NoIcon, "警告！", "输入的数据需在7-77之间");
         message.setIconPixmap(QPixmap(":/info/image/information/warning.png"));
@@ -477,8 +481,10 @@ void MainWindow::ShowAnimation()
         ai = new Dfs(m,option);
     else if(radio[1]->isChecked())
         ai = new Bfs(m,option);
-    else
+    else if(radio[2]->isChecked())
         ai = new QLearning(m,0,option);
+    else
+        ai = new QLearning(m,true,option);
     ai->solve();
 #if debug_QLearning
     ai->m.printValue();
@@ -510,8 +516,10 @@ void MainWindow::timeStart()
         ai = new Dfs(m,option);
     else if(radio[1]->isChecked())
         ai = new Bfs(m,option);
-    else
+    else if(radio[2]->isChecked())
         ai = new QLearning(m,0,option);
+    else
+        ai = new QLearning(m,true,option);
     ai->solve();
 #if debug_QLearning
     ai->m.printValue();

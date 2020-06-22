@@ -1,8 +1,15 @@
+#ifndef MAZE_H
+#define MAZE_H
+
 #include<memory>
 #include<vector>
 #include<iostream>
-#include<QString>
+#include<algorithm>
 #include"Global.h"
+#if QT
+#include<QString>
+#endif
+
 using namespace std;
 
 /**
@@ -37,7 +44,12 @@ public:
     pair<int,int> start;                    //入口坐标
     pair<int,int> end;                      //出口坐标
     vector<vector<MazeElem>> game_map;      //地图
-    QString MapStytle[4][22];               //地图风格字符串
+    #if QT
+    QString
+    #else
+    string
+    #endif 
+        MapStytle[4][22];               //地图风格字符串
 public:
     Maze(int row, int col);                 //构造函数，同时生成地图
     Maze(){initialMapStytle();}             //构造函数：初始未生成地图
@@ -73,3 +85,5 @@ public:
     void printValue();       //[测试]:打印训练的Q表
 #endif
 };
+
+#endif

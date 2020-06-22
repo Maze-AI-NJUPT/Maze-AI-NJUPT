@@ -15,9 +15,9 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     interface.h \
-    _Maze.h \
     AI.h \
-    Global.h
+    Global.h \
+    _Maze.h
 
 FORMS    +=
 
