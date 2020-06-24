@@ -83,6 +83,7 @@ void Bfs::solve()
             tmp = new Dfs(tmp_m, 2);
             tmp->solve();
             ans.insert(ans.end(), tmp->ans.begin(), tmp->ans.end());
+            delete tmp;
         }
 
 #if debug_bfs

@@ -1,5 +1,5 @@
-#include "Global.h"
-
+//#include "Global.h"
+#define QT 1
 #if QT
 #include "_Maze.h"
 #else
