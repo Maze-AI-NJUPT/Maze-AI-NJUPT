@@ -1,5 +1,5 @@
 //#include "Global.h"
-#define QT 1
+#define QT 0
 #if QT
 #include "_Maze.h"
 #else
@@ -62,6 +62,7 @@ class QLearning : public AI
 private:
     vector<vector<Direction>> decision; //标记是否已经访问过的矩阵
     map<pair<int, int>, int> visited;   //保存每个坐标将要走的下一个方向
+    double epsilon;
     map<pair<int,int>, double> trace;   //资格迹。Watkins's Q(λ)算法中使用
     bool lambda;                        //是否使用Watkins's Q(λ)
     bool getAns;                        
@@ -74,7 +75,6 @@ public:
         decision.clear();
     }
     void solve();                       //寻路算法入口
-    void lambda_solve();                //Watkins's Q(λ)
 
 #if debug_global
     void printDirection();              //打印决策矩阵

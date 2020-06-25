@@ -164,6 +164,7 @@ void Bfs::getBestPath()
 QLearning::QLearning(Maze maze, bool lambda, int option) : AI(maze, option)
 {
     this->lambda = lambda;
+    epsilon = EPSILON;
     srand(static_cast<unsigned>(time(NULL)));
     visited.clear();
     this->times = m.row * 2 + 5;
@@ -174,80 +175,33 @@ QLearning::QLearning(Maze maze, bool lambda, int option) : AI(maze, option)
 
 
 /**
- * 遍历所有状态，只更新每个状态的版本
+ * 遍历所有状态，从每个可用状态开始探索
  */
-
 void QLearning::solve()
 {
-    if(lambda == true)
-    {
-        lambda_solve();
-        return;
-    }
     visited.clear();
     ans.clear();
     _cSeq = 0;
     int row = m.getRow();
     int col = m.getCol();
     int _times = times;
-    while (true) //训练
-    {
-        _cSeq++;
-        for (int s = 0; s < row + col - 1; s++) //以对角线方式遍历
-        {
-            int r = 0;
-            int c = s - r;
-            while (r < row && c > 0)
-            {
-                if (c < col && !m.isFixedPoint(r, c)) //只有路和宝箱才需要做决定，其它就over了
-                    decision[r][c] = QLearningDecision(r, c);
-                r++;
-                c--;
-            }
-        }
-        if (getResult() == true)
-            break;
-    }
-#if debug_QLearning
-    printDirection();
 
-#endif
-    cout << "count: " << _cSeq << endl;
-}
-
-
-/**
- * 遍历所有状态，从每个可用状态开始探索的版本
- */
-void QLearning::lambda_solve()
-{
-    visited.clear();
-    ans.clear();
-    _cSeq = 0;
-    int _times = 10;
-    int row = m.getRow();
-    int col = m.getCol();
     getAns = false;
     while (getAns == false)
     {
-        _cSeq++;
-#if debug_QLearning
-        //printf("%d\n",_cSeq);
-#endif
         for (int s = 0; s < row + col - 1 && !getAns; s++) //以对角线方式遍历所有状态
         {
             int r = 0;
             int c = s - r;
             while (r < row && c > 0)                  //对于所有可用状态
             {
-                if (c < col && !m.isFixedPoint(r, c)) //只有路和宝箱才需要做决定，其它就over了
+                if (c < col && !m.isFixedPoint(r, c)) //只有路才需要做决定，其它就over了
                 {
-                    pair<int, int> cur_pos = make_pair(r,c);
-                    pair<int, int> start = cur_pos;
+                    _cSeq++;
+                    pair<int, int> start_pos = make_pair(r,c);
+                    pair<int,int> end_pos = episode(start_pos);           //一次episode
 
-                    pair<int,int> end_pos = episode(cur_pos);           //一次episode
-
-                    if (start == m.getStart() && end_pos == m.getEnd()) //是否已经得到路径
+                    if (getResult() == true)
                     {
                         getAns = true;
                         break;
@@ -257,21 +211,21 @@ void QLearning::lambda_solve()
                 c--;
             }
         }
+        epsilon = epsilon-0.0001 > 0.001 ? epsilon-0.0001 : 0.001;
     }
+
 #if debug_QLearning
     printDirection();
-    getResult();
     cout << "count: " << _cSeq << endl;
 #endif
+    
 }
-
 
 pair<int, int> QLearning::episode(pair<int,int> st)
 {
     trace.clear();
     pair<int, int> cur_pos = st;
     pair<int, int> pre_pos = cur_pos;
-    pair<int, int> start = cur_pos;
     visited.clear();
     int x = cur_pos.first;
     int y = cur_pos.second;
@@ -282,12 +236,17 @@ pair<int, int> QLearning::episode(pair<int,int> st)
         y = cur_pos.second;
         visited[cur_pos] = 1;
 
-        decision[x][y] = QLambdaDecision(x, y, pre_pos);          //做出动作并更新Q表
-        if (cur_pos == m.getEnd() || decision[x][y] == ERR || m.game_map[x][y].value == 0) //如果做出非法动作 或 Q表仍为0 则退出这次episode
+        Direction next_d;
+        if(lambda == true)
+            next_d = QLambdaDecision(x, y, pre_pos);          //做出动作并更新Q表
+        else
+            next_d = QLearningDecision(x, y, pre_pos);
+        
+        if (cur_pos == m.getEnd() || next_d == ERR ) //如果做出非法动作 或 Q表仍为0 则退出这次episode  || m.game_map[x][y].value == 0
             break;
 
         pre_pos = cur_pos;
-        cur_pos = m.getXY(cur_pos, decision[x][y]); //获取下一状态
+        cur_pos = m.getXY(cur_pos, next_d); //获取下一状态
     }
 
     return cur_pos;
@@ -301,6 +260,7 @@ Direction QLearning::QLearningDecision(int r, int c, pair<int, int> pre_pos)
     vector<Direction> directions;
     double pay[5] = {};
     int max_i = ERR;
+
     for (int i = UP; i <= LEFT; i++)
     {
         pair<int, int> nextPos = m.getXY(curPos, (Direction)i);
@@ -326,9 +286,10 @@ Direction QLearning::QLearningDecision(int r, int c, pair<int, int> pre_pos)
     if (max_i == ERR)
         return ERR;
     direction = Direction(max_i);
+    decision[r][c] = direction;
 
     //采用epsilon-greedy，一定概率智能体不选择最大价值的方向，而是选择其他方向
-    if ((rand() / (RAND_MAX + 0.00001)) > EPSILON && !directions.empty())
+    if ((rand() / (RAND_MAX + 0.00001)) < epsilon && !directions.empty())
     {
         double rand_d = rand() / (RAND_MAX + 1.00001);
         double rand_div = 1.0 / directions.size();
@@ -336,7 +297,6 @@ Direction QLearning::QLearningDecision(int r, int c, pair<int, int> pre_pos)
             if (rand_d < (i + 1) * rand_div)
             {
                 direction = directions[i];
-                estPay = pay[directions[i]];
                 break;
             }
     }
@@ -384,10 +344,11 @@ Direction QLearning::QLambdaDecision(int r, int c, pair<int, int> pre_pos)
         return ERR;
 
     direction = Direction(max_i);                      //最大化价值时
+    decision[r][c] = direction;
     trace[curPos] *= DISCOUNT * LAMBDA;                //资格迹进行衰减
 
     //采用epsilon-greedy，一定概率智能体不选择最大价值的方向，而是选择其他方向
-    if ((rand() / (RAND_MAX + 0.00001)) > EPSILON && !directions.empty())
+    if ((rand() / (RAND_MAX + 0.00001)) < epsilon && !directions.empty())
     {
         double rand_d = rand() / (RAND_MAX + 1.00001);
         double rand_div = 1.0 / directions.size();
@@ -395,7 +356,6 @@ Direction QLearning::QLambdaDecision(int r, int c, pair<int, int> pre_pos)
             if (rand_d < (i + 1) * rand_div)           //如果随机选择方向
             {
                 direction = directions[i];
-                estPay = pay[directions[i]];
                 trace[curPos] = 0;                     //资格迹置为0
                 break;
             }
@@ -450,13 +410,27 @@ void QLearning::printDirection()
 #if debug_AI_main
 int main()
 {
-    Maze maze(59, 59);
-    maze.print();
-
-    AI *ai = new QLearning(maze);
-    ai->solve();
-    ai->m.printValue();
-    ai->output();
+    int cases = 10;
+    while(cases--)
+    //for(int i=7;i<=97;i+=10)
+    {
+        int i = 53;
+        Maze maze(i,i);
+        printf("%d: Maze size %dx%d\n",10-cases,i,i);
+        QLearning normal(maze,false,2);
+        QLearning lambda(maze,true,2);
+        lambda.solve();
+        printf("QLambda   train count = %d\n",lambda._cSeq);
+        normal.solve();
+        printf("QLearning train count = %d\n\n",normal._cSeq);
+        //lambda.m.printValue();
+    }
+    // Maze maze(59, 59);
+    // maze.print();
+    // AI *ai = new QLearning(maze);
+    // ai->solve();
+    // ai->m.printValue();
+    // ai->output();
     return 0;
 }
 #endif
