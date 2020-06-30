@@ -4,12 +4,12 @@
 /* 配置全局信息 */
 #define debug_global 1              // 1 -> debug, 0 -> release
 #define debug_Maze_main 0           //debug _Maze.cpp
-#define debug_AI_main 1             //debug AI.cpp
+#define debug_AI_main 0             //debug AI.cpp
 
 #define debug_QLearning 0
 #define QLearning_select 0
 
-#define QT 0
+#define QT 1
 
 #if QT
 #include<QDebug>

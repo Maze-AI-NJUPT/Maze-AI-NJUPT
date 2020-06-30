@@ -252,7 +252,7 @@ void MainWindow::CreateMaze_Layout()
     iNum=1;
     MainWindow::label_bsc->setText(intToQString(0));
 
-    if((sp_h->value()<7||sp_h->value()>177)||(sp_w->value()<7||sp_w->value()>177))
+    if((sp_h->value()<7||sp_h->value()>77)||(sp_w->value()<7||sp_w->value()>77))
     {
         QMessageBox message(QMessageBox::NoIcon, "警告！", "输入的数据需在7-77之间");
         message.setIconPixmap(QPixmap(":/info/image/information/warning.png"));
